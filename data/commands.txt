@@ -1,0 +1,67 @@
+mongoimport -d flight_planner -c timezones  --type json --file timezones.json --jsonArray
+
+//to format the data
+db.timezones.aggregate([
+  // First zip the arrays together
+  { $addFields: {
+      timezonePairs: { 
+        $zip: { 
+          inputs: ["$TimeZones", "$WindowsTimeZones"],
+          useLongestLength: false
+        }
+      }
+    }
+  },
+  // Then unwind the paired array
+  { $unwind: "$timezonePairs" },
+  // Extract values from the pairs
+  { $project: {
+      _id: 0,
+      IsoAlpha2: 1,
+      IsoAlpha3: 1,
+      CountryName: 1,
+      Timezone: { $arrayElemAt: ["$timezonePairs", 0] },
+      WindowsTimeZone: { $arrayElemAt: ["$timezonePairs", 1] }
+    }
+  },
+  // Add city field
+  { $addFields: {
+      City: {
+        $arrayElemAt: [
+          { $split: ["$Timezone", "/"] },
+          -1
+        ]
+      }
+    }
+  },
+  { $out: "timezones" }
+])
+
+mongoexport -d flight_planner -c airports  --type json --out airports.json --jsonArray
+mongoimport -d flight_planner -c airports  --type json --file airports.json --jsonArray
+
+//to format data
+db.airports.updateMany(
+  {},
+  [
+    {
+      $set: {
+        name: {     $concat: [
+            { $toUpper: { $substrCP: ["$name", 0, 1] } },
+            { $toLower: { $substrCP: ["$name", 1, { $strLenCP: "$name" }] } }
+          ] },
+        
+        city: {     $concat: [
+            { $toUpper: { $substrCP: ["$city", 0, 1] } },
+            { $toLower: { $substrCP: ["$city", 1, { $strLenCP: "$city" }] } }
+          ]},
+        country: {     $concat: [
+            { $toUpper: { $substrCP: ["$country", 0, 1] } },
+            { $toLower: { $substrCP: ["$country", 1, { $strLenCP: "$country" }] } }
+          ] }
+      }
+    }
+  ]
+)
+
+mongoimport -d flight_planner -c countries  --type json --file countries.json --jsonArray

@@ -1,0 +1,50 @@
+<h1>login</h1>
+
+
+<p-card styleClass="user-form" class="flex justify-content-center">
+  <form [formGroup]="form" (submit)="processForm()">
+    <p-floatlabel>
+      <input id="email" type="email" pInputText formControlName="email" />
+      <label for="email">Email</label>
+    </p-floatlabel>
+    @if (form.get('email')?.invalid && form.get('email')?.dirty || form.get('email')?.touched) {
+      
+      <p-message severity="error" variant="simple" size="small">Email is not valid</p-message>
+    
+    }
+    <br>
+    <p-floatlabel>
+      <input id="password" type="password" pInputText formControlName="password" />
+      <label for="password">Password</label>
+    </p-floatlabel>
+    @if (form.get('password')?.invalid && form.get('password')?.dirty || form.get('password')?.touched) {
+      
+      <p-message severity="error" variant="simple" size="small">Password is not valid</p-message>
+    
+    }
+
+    <p-button type="submit">Login</p-button>
+  </form>
+
+  <p-divider align="center" type="solid"><b>or</b></p-divider>
+  <div id="google_sign_in_btn">
+    <div id="g_id_onload"></div>
+    <div class="g_id_signin"></div>
+  </div>
+</p-card>
+
+<!-- {
+    @if (usernameControl.hasError('required')) {
+      <p class="error-text">Username is mandatory!</p>
+    } @else if (usernameControl.hasError('maxlength')) {
+      <p class="error-text">Username is too long!</p>
+    } @else {
+      <p class="error-text">Username is too short!</p>
+    }
+ } -->
+
+
+
+
+
+

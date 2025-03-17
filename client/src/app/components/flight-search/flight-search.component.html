@@ -1,0 +1,38 @@
+<H1>Flight search</H1>
+<form [formGroup]="form" (submit)="processForm()">
+    <label>Depart:</label>
+    <input 
+        #dep_airport
+        type="text" 
+        formControlName="dep_airport" 
+        id="dep_airport" 
+        placeholder="Enter departure airport">
+    <label>Arrive:</label>
+    <input 
+        #arr_airport
+        type="text" 
+        formControlName="arr_airport" 
+        id="arr_airport" 
+        placeholder="Enter arrival airport">
+
+    <br>
+    from <input type="date" formControlName="dep_date" id="dep_date">
+    to <input type="date" formControlName="arr_date" id="arr_date">
+    <br>
+    <input type="radio" value="one-way" formControlName="trip_type" id="one-way"> one-way
+    <input type="radio" value="round-trip" formControlName="trip_type" id="round-trip"> round-trip
+    class: 
+    <select formControlName="class" id="class">
+        <option value="economy">Economy Class</option>
+        <option value="business">Business Class</option>
+        <option value="first">First Class</option>
+        <option value="premium_econ">Premium Economy Class</option>
+    </select>
+    passenger <input type="number" name="passenger" formControlName="passenger" id="passenger">
+    <button type="submit">search</button>
+</form>
+
+
+
+
+
