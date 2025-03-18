@@ -1,11 +1,13 @@
 package vttp.batch_b.min_project.server.repository;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
@@ -22,7 +24,7 @@ public class AirportRepository {
     private MongoTemplate template;
 
     // db.timezones.aggregate([
-    //     {   $lookup:  {
+    //     {  $lookup:  {
     //             from:'airports',
     //             foreignField:'city',
     //             localField:'City',
@@ -36,9 +38,12 @@ public class AirportRepository {
     //             as: 'currency',
     //             pipeline: [ { $project: {'currency.code':1, _id:0}}]
     //     }},
-    //     {   $match: {'airports.name':{   $regex:'changi', $options:'i'}}}
+    //     {   $unwind: '$airport'},
+    //     {  $match: {
+    //         "airport.name": { $regex: new RegExp(".*" + 'Singapore Changi' + ".*", "i")}
+    //     }}
     // ])
-    public Document findAirportByName(String airport) {
+    public List<Document> findAirportByName(String airport) {
         
         ProjectionOperation projectAirport = Aggregation.project("iata","name")
             .andExclude("_id");
@@ -56,15 +61,30 @@ public class AirportRepository {
             .pipeline(projectCountry)
             .as("currency");
 
+        AggregationOperation unwindAirport = Aggregation.unwind("airport");
+
+        Pattern pattern = Pattern.compile(".*" + airport + ".*", Pattern.CASE_INSENSITIVE);
+
         MatchOperation matchAirport = Aggregation.match(
-            Criteria.where("airports.name").regex(airport,"i")
+            Criteria.where("airport.name").regex(pattern)
         );
 
-        Aggregation pipeline = Aggregation.newAggregation(lookupAirports, lookupCountries, matchAirport);
+        // MatchOperation matchAirport = Aggregation.match(
+        //     Criteria.where("airport.name").regex(".*%s.*".formatted(airport), "i")
+        // );
+        Aggregation pipeline = Aggregation.newAggregation(
+            lookupAirports,
+            lookupCountries,
+            unwindAirport,
+            matchAirport
+            );
 
         AggregationResults<Document> results = template.aggregate(pipeline, "timezones",Document.class);
 
-        return results.getMappedResults().get(0);
+
+        System.out.println(results.getMappedResults().size());
+        
+        return results.getMappedResults();
     }
 
     //db.airports.inserMany({})

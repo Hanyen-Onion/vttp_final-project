@@ -8,5 +8,7 @@ public record AirportQuery(
     String cabinClass,
     String tripType,
     Integer passenger
+    // String depTz,
+    // String arrTz
     ) 
 {}

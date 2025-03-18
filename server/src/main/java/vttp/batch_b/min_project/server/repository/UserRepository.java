@@ -1,7 +1,5 @@
 package vttp.batch_b.min_project.server.repository;
 
-import static vttp.batch_b.min_project.server.repository.sql.*;
-
 import java.sql.ResultSet;
 import java.util.Optional;
 
@@ -10,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import vttp.batch_b.min_project.server.models.User;
+import static vttp.batch_b.min_project.server.repository.Sql.*;
 
 @Repository
 public class UserRepository {
