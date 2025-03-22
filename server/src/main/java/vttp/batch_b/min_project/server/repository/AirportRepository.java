@@ -15,8 +15,6 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
-
-
 @Repository
 public class AirportRepository {
     
@@ -24,24 +22,21 @@ public class AirportRepository {
     private MongoTemplate template;
 
     // db.timezones.aggregate([
-    //     {  $lookup:  {
-    //             from:'airports',
-    //             foreignField:'city',
-    //             localField:'City',
-    //             as: 'airport',
-    //             pipeline: [ { $project: {iata:1, _id:0, name:1}} ]
+    //     {  $lookup:  {   from:'airports',
+    //                      foreignField:'city',
+    //                      localField:'City',
+    //                      as: 'airport',
+    //                      pipeline: [ { $project: {iata:1, _id:0, name:1}} ]
     //     }},
-    //     {   $lookup: {
-    //             from:'countries',
-    //             foreignField:'isoAlpha3',
-    //             localField:'IsoAlpha3',
-    //             as: 'currency',
-    //             pipeline: [ { $project: {'currency.code':1, _id:0}}]
+    //     {   $lookup: {  from:'countries',
+    //                     foreignField:'isoAlpha3',
+    //                     localField:'IsoAlpha3',
+    //                     as: 'currency',
+    //                     pipeline: [ { $project: {'currency.code':1, _id:0}}]
     //     }},
     //     {   $unwind: '$airport'},
-    //     {  $match: {
-    //         "airport.name": { $regex: new RegExp(".*" + 'Singapore Changi' + ".*", "i")}
-    //     }}
+    //     {  $match: { "airport.name": { $regex: new RegExp(".*" + 'Singapore Changi' + ".*", "i")}}},
+    //     {   $unwind: '$currency'}
     // ])
     public List<Document> findAirportByName(String airport) {
         
@@ -62,6 +57,7 @@ public class AirportRepository {
             .as("currency");
 
         AggregationOperation unwindAirport = Aggregation.unwind("airport");
+        AggregationOperation unwindCurrency = Aggregation.unwind("currency");
 
         Pattern pattern = Pattern.compile(".*" + airport + ".*", Pattern.CASE_INSENSITIVE);
 
@@ -76,14 +72,12 @@ public class AirportRepository {
             lookupAirports,
             lookupCountries,
             unwindAirport,
+            unwindCurrency,
             matchAirport
             );
 
         AggregationResults<Document> results = template.aggregate(pipeline, "timezones",Document.class);
 
-
-        System.out.println(results.getMappedResults().size());
-        
         return results.getMappedResults();
     }
 

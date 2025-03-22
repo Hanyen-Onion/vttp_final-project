@@ -26,11 +26,15 @@ public class AuthService {
 
     public static final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/tokeninfo";
     public static final String GOOGLE_ACCESS_TOKEN_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+    public static final String AMADEUS_ACCESS_TOKEN_URL = "https://test.api.amadeus.com/v1/security/oauth2/token"
+
+
+
+
 
     public Boolean isGoogleTokenValidated(User user) {
         return user != null;
     }
-    
 
     public User getGoogleIdToken(String tokenId) {
 

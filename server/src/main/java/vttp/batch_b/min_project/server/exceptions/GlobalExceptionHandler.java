@@ -14,12 +14,21 @@ import vttp.batch_b.min_project.server.models.ErrorObject;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler(QueryNotFoundException.class)
+    @ExceptionHandler(QueryNotReceivedException.class)
     public ResponseEntity<ErrorObject> handleQueryNotFound(
         Exception ex, HttpServletRequest req, HttpServletResponse resp) {
         
         ErrorObject err = new ErrorObject(ex.getMessage(), resp.getStatus(), new Date(), "");
 
-        return new ResponseEntity<ErrorObject>(err, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AirportNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleAiportNotFound(
+        Exception ex, HttpServletRequest req, HttpServletResponse resp) {
+
+        ErrorObject err = new ErrorObject(ex.getMessage(), resp.getStatus(), new Date(), "");
+
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
     }
 }

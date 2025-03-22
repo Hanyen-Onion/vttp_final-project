@@ -1,7 +1,5 @@
 package vttp.batch_b.min_project.server.models;
 
-import java.util.List;
-
 import org.bson.Document;
 
 public class Airport {
@@ -26,20 +24,22 @@ public class Airport {
     public String getCurrency() {    return currency;}
     public void setCurrency(String currency) {    this.currency = currency;}
 
-    @SuppressWarnings("unchecked")
     public static Airport docToAirport(Document doc, String airport) {
+        
+        Document airDoc = (Document) doc.get("airport");
+        Document curDoc = (Document) doc.get("currency");
+        //Document cur2Doc = (Document) curDoc.get("currency");
+
+        System.out.println(">>> curDoc:\n" + curDoc.toString());
+        //System.out.println(">>> cur2Doc:\n" + cur2Doc.toString());
         
         Airport air = new Airport();
         air.setCountry(doc.getString("CountryName"));
-        air.setIata(doc.getString("iata"));
-        List<Document> airports = (List<Document>) doc.get("airports");
-        airports.stream()
-            .filter(airportDoc -> airportDoc.getString("name").contains(airport))
-            .findFirst()
-            .ifPresent(airportDoc -> {
-                air.setAirport(airport);
-                air.setIata(airportDoc.getString("iata"));
-            });
+        air.setIata(airDoc.getString("iata"));
+        air.setCurrency(curDoc.getString("code"));
+        air.setTz(doc.getString("Timezone"));
+
+        System.out.println(air);
     
         return air;
     }
@@ -55,14 +55,10 @@ public class Airport {
         return doc;
     }
 
-    // @Override
-    // public String toString() {
-    //     return "Airport [icao=" + icao + ", iata=" + iata + ", name=" + name + ", city=" + city + ", country=" + country
-    //             + ", lat=" + lat + ", lon=" + lon + ", tz=" + tz + ", currency=" + currency + "]";
-    // }
-
-    
-    
-  
+    @Override
+    public String toString() {
+        return "Airport [iata=" + iata + ", airport=" + airport + ", country=" + country + ", tz=" + tz + ", currency="
+                + currency + "]";
+    }
 
 }

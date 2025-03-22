@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import vttp.batch_b.min_project.server.exceptions.AirportNotFoundException;
 import vttp.batch_b.min_project.server.models.Airport;
 import vttp.batch_b.min_project.server.models.dtos.AirportQuery;
 import vttp.batch_b.min_project.server.repository.AirportRepository;
@@ -32,7 +33,14 @@ public class AirportService {
 
     public Airport getDataWithAirport(String airport) {
 
-        List<Document> docs = airRepo.findAirportByName(airport);
+        List<Document> docs = airRepo.findAirportByName(
+            airport.toLowerCase().replace("airport", "").strip()
+        );
+
+        //no airport found
+        if (docs.size() < 1) {
+            throw new AirportNotFoundException("cannot find %s airport".formatted(airport));
+        }
 
         Document doc = docs.get(0);
         
@@ -42,16 +50,19 @@ public class AirportService {
     public void getOneWayTrip(AirportQuery query) {
         String url = UriComponentsBuilder
             .fromUriString(ONE_WAY_URL)
-            .queryParam("api_key", flightApiKey)
-            .queryParam("departure_airport_code", query.depAirport())
-            .queryParam("arrival_airport_code", query.arrAirport())
-            .queryParam("departure_date", query.depDate())
-            .queryParam("number_of_adults", query.passenger())
-            .queryParam("number_of_childrens", 0)
-            .queryParam("number_of_infants", 0)
-            .queryParam("cabin_class", query.cabinClass())
-            .queryParam("currency", "SGD")
-            .toUriString();
+            .pathSegment(
+                flightApiKey,
+                query.depAirport(),
+                query.arrAirport(),
+                query.depDate(),
+                query.passenger().toString(),
+                "0", "0",
+                query.cabinClass(),
+                "SGD"
+            ).toUriString();
+
+            System.out.println(query);
+            System.out.println(url);
         
         RequestEntity req = RequestEntity.get(url).build();
 
