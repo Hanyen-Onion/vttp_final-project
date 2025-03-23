@@ -56,7 +56,7 @@ public class FlightSearchController {
                 Integer.valueOf(form.getFirst("passenger"))
             );
             
-            airSvc.getOneWayTrip(query);
+            //airSvc.getOneWayTrip(query);
 
         } else {
             throw new QueryNotReceivedException("query not found");

@@ -1,5 +1,6 @@
 package vttp.batch_b.min_project.server.services;
 
+import java.io.StringReader;
 import java.util.List;
 
 import org.bson.Document;
@@ -11,10 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import vttp.batch_b.min_project.server.exceptions.AirportNotFoundException;
 import vttp.batch_b.min_project.server.models.Airport;
 import vttp.batch_b.min_project.server.models.dtos.AirportQuery;
 import vttp.batch_b.min_project.server.repository.AirportRepository;
+import static vttp.batch_b.min_project.server.services.AuthService.AMADEUS;
 
 @Service
 public class AirportService {
@@ -22,14 +27,14 @@ public class AirportService {
     @Value("${forex.api.key}")
     private String exApiKey;
 
-    @Value("${flight.api.key}")
-    private String flightApiKey;
+    @Autowired
+    private AuthService authSvc;
 
     @Autowired
     private AirportRepository airRepo;
 
     public static final String EX_URL = "https://api.exchangeratesapi.io/v1/latest";
-    public static final String ONE_WAY_URL = "https://api.flightapi.io/onewaytrip";
+    public static final String FLIGHT_OFFER_URL = "https://test.api.amadeus.com/v2/shopping/flight-offers";
 
     public Airport getDataWithAirport(String airport) {
 
@@ -47,34 +52,59 @@ public class AirportService {
         return Airport.docToAirport(doc, airport);
     }
 
-    public void getOneWayTrip(AirportQuery query) {
-        String url = UriComponentsBuilder
-            .fromUriString(ONE_WAY_URL)
-            .pathSegment(
-                flightApiKey,
-                query.depAirport(),
-                query.arrAirport(),
-                query.depDate(),
-                query.passenger().toString(),
-                "0", "0",
-                query.cabinClass(),
-                "SGD"
-            ).toUriString();
+    public void getFlightOffer(AirportQuery query) {
 
-            System.out.println(query);
-            System.out.println(url);
+        String url = "";
+
+        if (query.tripType().equals("one-way")) {
+            url = UriComponentsBuilder
+            .fromUriString(FLIGHT_OFFER_URL)
+            .queryParam("originLocationCode", query.depAirport())
+            .queryParam("destinationLocationCode", query.arrAirport())
+            .queryParam("departureDate", query.depDate())
+            .queryParam("adults", query.passenger())
+            .queryParam("travelClass", query.cabinClass().toUpperCase())
+            .queryParam("nonStop", true)
+            .queryParam("max", 100)
+            .toUriString();
+        } else if (query.tripType().equals("round-trip")) {
+            url = UriComponentsBuilder
+            .fromUriString(FLIGHT_OFFER_URL)
+            .queryParam("originLocationCode", query.depAirport())
+            .queryParam("destinationLocationCode", query.arrAirport())
+            .queryParam("departureDate", query.depDate())
+            .queryParam("returnDate", query.arrDate())
+            .queryParam("adults", query.passenger())
+            .queryParam("travelClass", query.cabinClass().toUpperCase())
+            .queryParam("nonStop", true)
+            .queryParam("max", 100)
+            .toUriString();
+        }
         
-        RequestEntity req = RequestEntity.get(url).build();
+        String accessCode = authSvc.retrieveAccessToken(AMADEUS);
 
+        RequestEntity<Void> req = RequestEntity
+            .get(url)
+            .header("Authorization", "Bearer " + accessCode)
+            .build();
+        
         RestTemplate template = new RestTemplate();
 
         try {
             ResponseEntity<String> resp = template.exchange(req, String.class);
-
             String payload = resp.getBody();
-            System.out.println(payload);
+            getflightData(payload);
+
         } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public void getflightData(String payload) {
+        JsonReader reader = Json.createReader(new StringReader(payload));
+        JsonObject data = reader.readObject();
+
+        System.out.println(data);
 
     }
 

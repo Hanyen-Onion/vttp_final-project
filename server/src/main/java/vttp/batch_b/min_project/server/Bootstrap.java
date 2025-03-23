@@ -5,8 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import vttp.batch_b.min_project.server.models.dtos.AirportQuery;
-import vttp.batch_b.min_project.server.repository.AirportRepository;
 import vttp.batch_b.min_project.server.services.AirportService;
+import vttp.batch_b.min_project.server.services.AuthService;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -15,7 +15,7 @@ public class Bootstrap implements CommandLineRunner {
     private AirportService airportSvc;
 
     @Autowired
-    private AirportRepository repo;
+    private AuthService authSvc;
     
     @Override
     public void run(String...args) {
@@ -37,7 +37,8 @@ public class Bootstrap implements CommandLineRunner {
             1
         );
 
-        airportSvc.getOneWayTrip(query);
+        //authSvc.getAmadeusAccessToken();
+       airportSvc.getFlightOffer(query);
 
 
         
