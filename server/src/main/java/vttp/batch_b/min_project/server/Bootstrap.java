@@ -1,5 +1,7 @@
 package vttp.batch_b.min_project.server;
 
+import java.io.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -38,11 +40,22 @@ public class Bootstrap implements CommandLineRunner {
         );
 
         //authSvc.getAmadeusAccessToken();
-       airportSvc.getFlightOffer(query);
+       //airportSvc.getFlightOffer(query);
+
+        try {
+            File file = new File("../data/test.json");
+            airportSvc.getflightData(file);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+     
+
 
 
         
-    }
+    
 
         
 }
