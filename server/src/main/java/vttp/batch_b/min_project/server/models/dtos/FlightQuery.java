@@ -1,6 +1,6 @@
 package vttp.batch_b.min_project.server.models.dtos;
 
-public record AirportQuery(
+public record FlightQuery(
     String depAirport, 
     String arrAirport, 
     String depDate,

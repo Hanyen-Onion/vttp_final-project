@@ -83,7 +83,6 @@ public class AuthService {
             e.printStackTrace();
         }
     }
-    
 
     public Boolean isGoogleTokenValidated(User user) {
         return user != null;
@@ -113,12 +112,11 @@ public class AuthService {
                 User user = User.jsonToUser(json);
 
                 //check if user exist
-                if (!userSvc.isUserRegistered(user)) {
+                if (!userSvc.isUserRegistered(user.getEmail())) {
                     //save user
                     if (userSvc.createNewUser(user))
                         logger.info("%s has been signed up".formatted(user.getEmail()));
                 }
-
                 return user;
             }
         } catch (HttpClientErrorException ex) {

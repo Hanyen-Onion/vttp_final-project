@@ -6,6 +6,7 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
     exports: [
@@ -16,6 +17,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
         DividerModule,
         MessageModule,
         AutoCompleteModule,
+        PaginatorModule,
     ]
 })
 

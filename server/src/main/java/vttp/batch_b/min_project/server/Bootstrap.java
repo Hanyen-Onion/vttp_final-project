@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import vttp.batch_b.min_project.server.models.dtos.AirportQuery;
+import vttp.batch_b.min_project.server.models.dtos.FlightQuery;
 import vttp.batch_b.min_project.server.services.AirportService;
 import vttp.batch_b.min_project.server.services.AuthService;
 
@@ -29,7 +29,7 @@ public class Bootstrap implements CommandLineRunner {
         //     airportSvc.insertAirports(airports);
         // }
 
-        AirportQuery query = new AirportQuery(
+        FlightQuery query = new FlightQuery(
             "SIN",
             "TPE",
             "2025-03-23",
@@ -44,7 +44,7 @@ public class Bootstrap implements CommandLineRunner {
 
         try {
             File file = new File("../data/test.json");
-            airportSvc.getflightData(file);
+            //airportSvc.getflightData(file);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,13 +6,13 @@ public class ErrorObject {
     private String message;
     private int status;
     private Date timestamp;
-    private String url;
+    //private String url;
     
-    public ErrorObject(String message, int status, Date timestamp, String url) {
+    public ErrorObject(String message, int status, Date timestamp) {
         this.message = message;
         this.status = status;
         this.timestamp = timestamp;
-        this.url = url;
+        //this.url = url;
     }
     
     public String getMessage() {    return message;}
@@ -24,6 +24,6 @@ public class ErrorObject {
     public Date getTimestamp() {    return timestamp;}
     public void setTimestamp(Date timestamp) {    this.timestamp = timestamp;}
     
-    public String getUrl() {    return url;}
-    public void setUrl(String url) {    this.url = url;}
+    // public String getUrl() {    return url;}
+    // public void setUrl(String url) {    this.url = url;}
 }

@@ -19,7 +19,7 @@ import vttp.batch_b.min_project.server.services.AuthService;
 import vttp.batch_b.min_project.server.services.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(path="/api", produces=MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 
     @Value("${google.client.id}")

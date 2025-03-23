@@ -2,8 +2,12 @@
 export interface UserInfo {
     email:string 
     username:string
-    first_name:string
-    last_name:string
+}
+
+export interface LoginInfo {
+    email:string 
+    username:string
+    password:string
 }
 
 export interface UserSlice {
@@ -37,3 +41,9 @@ export interface FlightDetail {
 // cabin_class:string
 // currency:string
 // region:string
+
+export interface ErrorObject {
+    message: string;
+    status: number;
+    timestamp: Date;
+}

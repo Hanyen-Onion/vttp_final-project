@@ -20,6 +20,7 @@ import { PrimeModule } from './prime.module';
 import { UserStore } from './store/user.store';
 import { AutoCompleteService } from './services/autocomplete.service';
 import { FlightService } from './services/flight.service';
+import { AuthService } from './services/auth.service';
 
 
 const routes: Routes = [
@@ -53,6 +54,7 @@ const routes: Routes = [
     AutoCompleteService,
     UserService,
     FlightService,
+    AuthService,
     provideHttpClient(), 
     providePrimeNG({
       theme: {

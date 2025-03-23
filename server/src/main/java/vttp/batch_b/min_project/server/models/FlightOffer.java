@@ -2,6 +2,9 @@ package vttp.batch_b.min_project.server.models;
 
 import java.util.UUID;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+
 public class FlightOffer {
     private String id;
     private String duration;
@@ -14,12 +17,33 @@ public class FlightOffer {
     private String airline;
     private String price;
     private String currency;
+    private String carrier;
+    private String date;
     //private String cabinClass;
 
     public FlightOffer() {
         this.id = UUID.randomUUID().toString().substring(0, 8);
     }
-    
+
+    public static JsonObject toJson(FlightOffer flight) {
+        JsonObject json = Json.createObjectBuilder()
+            .add("id", flight.getId())
+            .add("depCode", flight.getDepCode())
+            .add("depTerminal", flight.getDepTerminal())
+            .add("depTime", flight.getDepTime())
+            .add("arrCode", flight.getArrCode())
+            .add("arrTerminal", flight.getArrTerminal())
+            .add("arrTime", flight.getArrTime())
+            .add("duration", flight.getDuration())
+            .add("date", flight.getDate())
+            .add("airline", flight.getAirline())
+            .add("carrier", flight.getCarrier())
+            .add("price", flight.getPrice())
+            .add("currency", flight.getCurrency())
+            .build();
+        return json;
+    }
+
     public String getId() {    return id;}
 
     public String getDuration() {    return duration;}
@@ -51,6 +75,12 @@ public class FlightOffer {
     
     public String getCurrency() {    return currency;}
     public void setCurrency(String currency) {    this.currency = currency;}
+
+    public String getCarrier() {    return carrier;}
+    public void setCarrier(String carrier) {    this.carrier = carrier;}
+
+    public String getDate() {    return date;}
+    public void setDate(String date) {    this.date = date;}
 
     @Override
     public String toString() {

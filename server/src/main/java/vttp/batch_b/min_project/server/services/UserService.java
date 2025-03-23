@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import vttp.batch_b.min_project.server.exceptions.EmailNotFoundException;
 import vttp.batch_b.min_project.server.models.User;
 import vttp.batch_b.min_project.server.repository.UserRepository;
 
@@ -18,9 +19,9 @@ public class UserService {
         return userRepo.createNewUser(user);
     }
 
-    public Boolean isUserRegistered (User user) {
+    public Boolean isUserRegistered (String email) {
         
-        Optional<User> opt = userRepo.findUserByEmail(user.getEmail());
+        Optional<User> opt = userRepo.findUserByEmail(email);
 
         return opt.isPresent();
     }
@@ -35,7 +36,7 @@ public class UserService {
             return dbUserInfo;
         }
 
-        return null;
+        throw new EmailNotFoundException("Email not found: %s does not exists".formatted(email));
     }
 
 }

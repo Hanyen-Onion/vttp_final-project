@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -22,8 +24,9 @@ import jakarta.json.JsonReader;
 import vttp.batch_b.min_project.server.exceptions.AirportNotFoundException;
 import vttp.batch_b.min_project.server.models.Airport;
 import vttp.batch_b.min_project.server.models.FlightOffer;
-import vttp.batch_b.min_project.server.models.dtos.AirportQuery;
+import vttp.batch_b.min_project.server.models.dtos.FlightQuery;
 import vttp.batch_b.min_project.server.repository.AirportRepository;
+import vttp.batch_b.min_project.server.repository.FlightResultsRepository;
 import vttp.batch_b.min_project.server.utils.TimeParser;
 
 import static vttp.batch_b.min_project.server.services.AuthService.AMADEUS;
@@ -40,26 +43,21 @@ public class AirportService {
     @Autowired
     private AirportRepository airRepo;
 
+    @Autowired
+    private FlightResultsRepository fRepo;
+
     public static final String EX_URL = "https://api.exchangeratesapi.io/v1/latest";
     public static final String FLIGHT_OFFER_URL = "https://test.api.amadeus.com/v2/shopping/flight-offers";
 
-    public Airport getDataWithAirport(String airport) {
+    public List<JsonObject> getFlights(FlightQuery query) {
 
-        List<Document> docs = airRepo.findAirportByName(
-            airport.toLowerCase().replace("airport", "").strip()
-        );
-
-        //no airport found
-        if (docs.size() < 1) {
-            throw new AirportNotFoundException("cannot find %s airport".formatted(airport));
-        }
-
-        Document doc = docs.get(0);
-        
-        return Airport.docToAirport(doc, airport);
+        if (!fRepo.exists(keyName(query)))
+            getFlightOffer(query);
+            
+        return fRepo.getFlightsOffers(keyName(query));
     }
 
-    public void getFlightOffer(AirportQuery query) {
+    public void getFlightOffer(FlightQuery query) {
 
         String url = "";
 
@@ -100,20 +98,23 @@ public class AirportService {
         try {
             ResponseEntity<String> resp = template.exchange(req, String.class);
             String payload = resp.getBody();
+            String key = keyName(query);
             
-            //getflightData(payload);
+            //getflightData(payload, "timezone", key);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //public void getflightData(String payload) throws IOException {
-    public void getflightData(File payload) throws IOException {
-        JsonReader jr = Json.createReader(new BufferedReader(new FileReader(payload)));
-        //JsonReader jr = Json.createReader(new StringReader(payload));
+    public void getflightData(String payload, String timezone, String key) throws IOException {
+    //public void getflightData(File payload, String timezone, String keyName) throws IOException {
+        //JsonReader jr = Json.createReader(new BufferedReader(new FileReader(payload)));
+        JsonReader jr = Json.createReader(new StringReader(payload));
         JsonObject json = jr.readObject();
         JsonArray data = json.getJsonArray("data");
+
+        List<FlightOffer> flights = new ArrayList<>();
 
         for (int i = 0; i < data.size(); i++) {
             JsonArray segments = data.getJsonObject(i).getJsonArray("itineraries").getJsonObject(0).getJsonArray("segments");
@@ -127,24 +128,50 @@ public class AirportService {
                 String arrCode = seg.getJsonObject("arrival").getString("iataCode", "");
                 String arrTerminal = seg.getJsonObject("arrival").getString("terminal","");
                 String arrTime = seg.getJsonObject("arrival").getString("at","");
-                String carrierCode = seg.getString("carrierCode");
+                String carrierCode = seg.getString("carrierCode", "");
                 String duration = seg.getString("duration","");
 
-                String carrier = json.getJsonObject("dictionaries").getJsonObject("carriers").getString(carrierCode);
-                String currency = data.getJsonObject(i).getJsonObject("price").getString("currency");
-                String price = data.getJsonObject(i).getJsonObject("price").getString("total");
+                String carrier = json.getJsonObject("dictionaries").getJsonObject("carriers").getString(carrierCode, "");
+                String currency = data.getJsonObject(i).getJsonObject("price").getString("currency","");
+                String price = data.getJsonObject(i).getJsonObject("price").getString("total","");
+                String date = data.getJsonObject(i).getString("lastTicketingDate", "");
 
                 FlightOffer fo = new FlightOffer();
+                fo.setDepCode(depCode);
+                fo.setDepTerminal(depTerminal);
+                fo.setDepTime(TimeParser.parseDateTime(depTime, timezone));
+                fo.setArrCode(arrCode);
+                fo.setArrTerminal(arrTerminal);
+                fo.setArrTime(TimeParser.parseDateTime(arrTime, timezone));
+                fo.setCurrency(currency);
+                fo.setCarrier(carrier);
+                fo.setPrice(price);
                 fo.setDuration(TimeParser.parseDuration(duration));
-
+                fo.setDate(date);
+                flights.add(fo);
             }           
         }
+    fRepo.cacheFlightOffers(flights, key);
+    }
 
-    
-            
+    public String keyName(FlightQuery query) {
+        return "flights:" + query.depAirport() + ":" + query.depAirport() + ":" + query.depDate();
+    }
+
+    public Airport getDataWithAirport(String airport) {
+
+        List<Document> docs = airRepo.findAirportByName(
+            airport.toLowerCase().replace("airport", "").strip()
+        );
+
+        //no airport found
+        if (docs.size() < 1) {
+            throw new AirportNotFoundException("cannot find %s airport".formatted(airport));
+        }
+
+        Document doc = docs.get(0);
         
-
-
+        return Airport.docToAirport(doc, airport);
     }
 
     public void getExchangeRate(String currency) {

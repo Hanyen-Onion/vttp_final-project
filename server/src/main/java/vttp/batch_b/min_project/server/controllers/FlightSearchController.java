@@ -1,5 +1,7 @@
 package vttp.batch_b.min_project.server.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -14,7 +16,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import vttp.batch_b.min_project.server.exceptions.QueryNotReceivedException;
 import vttp.batch_b.min_project.server.models.Airport;
-import vttp.batch_b.min_project.server.models.dtos.AirportQuery;
+import vttp.batch_b.min_project.server.models.dtos.FlightQuery;
 import vttp.batch_b.min_project.server.services.AirportService;
 
 @Controller
@@ -31,7 +33,7 @@ public class FlightSearchController {
         consumes=MediaType.APPLICATION_JSON_VALUE
         //produces=MediaType.APPLICATION_JSON_VALUE
         )
-    public ResponseEntity<String> getSearch (@RequestParam MultiValueMap<String, String> form) {
+    public ResponseEntity<List<JsonObject>> getSearch (@RequestParam MultiValueMap<String, String> form) {
         
         if (form.getFirst("dep_airport") != null || form.getFirst("arr_airport") != null) {
             
@@ -46,7 +48,7 @@ public class FlightSearchController {
             System.out.println(">>> depAirport:\n" + dep);
             System.out.println(">>> arrAirport:\n" + arr);
     
-            AirportQuery query = new AirportQuery(
+            FlightQuery query = new FlightQuery(
                 dep.getIata(),
                 arr.getIata(),
                 form.getFirst("dep_date"),
@@ -56,13 +58,10 @@ public class FlightSearchController {
                 Integer.valueOf(form.getFirst("passenger"))
             );
             
-            //airSvc.getOneWayTrip(query);
-
-        } else {
-            throw new QueryNotReceivedException("query not found");
-        }
-
-        return ResponseEntity.ok("{}");
+            List<JsonObject> flights = airSvc.getFlights(query);
+            return ResponseEntity.ok(flights);
+        } 
+        throw new QueryNotReceivedException("query not found");
     }
 
     @GetMapping(path="/google-maps-key")

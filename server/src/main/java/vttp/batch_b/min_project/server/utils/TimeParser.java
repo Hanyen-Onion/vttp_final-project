@@ -26,7 +26,7 @@ public class TimeParser {
             .atZone(ZoneId.of("UTC"))
             .withZoneSameInstant(ZoneId.of(timezone));
         
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy\nh:mm a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a");
         
         return zonedDateTime.format(formatter);
     }
