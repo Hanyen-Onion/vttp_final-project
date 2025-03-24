@@ -55,7 +55,7 @@ export class LoginFormComponent implements OnInit {
   createLoginForm():FormGroup {
     this.isLogin = true
     return this.fb.group({
-      email: this.fb.control<string>('',[ Validators.required, Validators.email], [this.emailSignedUpValidator()] ),
+      email: this.fb.control<string>('',[ Validators.required, Validators.email], [this.emailSignedUpValidator()]),
       password: this.fb.control<string>('', [ Validators.required, 
                                               Validators.minLength(6), 
                                               Validators.maxLength(20)])
@@ -125,7 +125,6 @@ export class LoginFormComponent implements OnInit {
 
   renderSignInButton() {
     const onload = document.getElementById('g_id_onload')
-
     if (onload) {
       onload.setAttribute('data-client_id',
         '175032234502-fq0i953n2hqqg4k2c83gae6a6ifa1bps.apps.googleusercontent.com')
@@ -137,7 +136,6 @@ export class LoginFormComponent implements OnInit {
     }
 
     const signin = document.getElementById('g_id_signin')
-
     if (signin) {
       signin.setAttribute('data-type', 'standard')
       signin.setAttribute('data-shape', 'pill')

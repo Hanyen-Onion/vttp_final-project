@@ -1,11 +1,17 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, firstValueFrom, map, Observable, throwError } from "rxjs";
+import { UserInfo } from "../models";
 
 @Injectable()
 export class UserService {
 
     private http = inject(HttpClient)
+
+    createUser(user:UserInfo) {
+
+        return this.http.post('/api/create-user', user)
+    }
 
     validateEmail(email:string):Observable<any> {
 
@@ -16,19 +22,6 @@ export class UserService {
             .pipe(
                 catchError(this.handleError)
             )
-    }
-
-    //for user that did not sign in with google
-    postLogin(email:string, password:string):Observable<string> {
-
-        const loginInfo = new HttpParams()
-            .set('email', email)
-            .set('password', password)
-
-        const headers = new HttpHeaders()
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-        
-        return this.http.post<string>('/api/login', loginInfo.toString(), {headers:headers})
     }
 
     handleError(error: HttpErrorResponse) {
