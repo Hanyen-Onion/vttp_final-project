@@ -24,7 +24,7 @@ COPY server/pom.xml .
 
 # copy angular files to static
 COPY --from=ng-build \
-        /src/dist/client/browser/* src/main/resources/static
+        /workdir/dist/client/browser/* src/main/resources/static
 
 RUN chmod a+x mvnw && ./mvnw package -Dmaven.test.skip=true
 

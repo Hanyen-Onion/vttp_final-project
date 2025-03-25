@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UserStore } from '../../store/user.store';
 import { FlightOffer, UserInfo } from '../../models';
 import { Subscription } from 'rxjs';
+import { flight } from '../../db/flights.repository';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,10 +18,8 @@ export class DashboardComponent implements OnInit{
   protected sub$!:Subscription
   
   ngOnInit(): void {
-    this.userStore.flights$.subscribe(
-      f => {
-        console.log('Current flights:', f);
-        this.flights = f}
+    flight.getFlights().then(
+      f => this.flights = f
     )
   }
 }
