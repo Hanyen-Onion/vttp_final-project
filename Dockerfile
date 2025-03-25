@@ -15,7 +15,7 @@ RUN npm ci && ng build
 #build spring boot
 FROM openjdk:23-jdk AS j-build
 
-WORKDIR /workdir
+WORKDIR /src
 
 COPY server/.mvn .mvn
 COPY server/src src

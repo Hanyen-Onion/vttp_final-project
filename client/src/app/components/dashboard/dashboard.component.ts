@@ -28,5 +28,9 @@ export class DashboardComponent implements OnInit{
     )
   }
 
+  deleteFlight(flight:FlightOffer) {
+    
+  }
+
 
 }

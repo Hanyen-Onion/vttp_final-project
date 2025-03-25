@@ -1,5 +1,51 @@
 <p>dashboard works!</p>
 
 @for (f of flights; let idx = $index; track idx) {
-    {{f.price}}
+    <div class="card flight-card">
+        <p-panel 
+        [toggleable]="true" 
+        [collapsed]="true"
+        expandIcon="pi pi-chevron-up" 
+        collapseIcon="pi pi-chevron-down">
+            <ng-template pTemplate="header">
+                <div class="flight-header">
+                    <div class="flight-main-info">
+                        <span class="carrier">{{ f.carrier }}</span>
+                        <span class="flight-time">{{ f.depTime }} - {{ f.arrTime }}</span>
+                        <span class="duration">{{ f.duration }}</span>
+                    </div>
+                    <div class="flight-price">{{ f.price | currency:f.currency:'symbol-narrow' }}</div>
+                </div>
+            </ng-template>
+    
+            <div class="flight-details">
+                <div class="flight-journey">
+                    <div class="departure">
+                        <div class="time">{{ f.depTime }}</div>
+                        <div class="airport">{{ f.depCode }}</div>
+                        <div class="terminal">Terminal: {{ f.depTerminal }}</div>
+                    </div>
+    
+                    <div class="journey-line">
+                        <div class="duration-indicator">{{ f.duration }}</div>
+                    </div>
+    
+                    <div class="arrival">
+                        <div class="time">{{ f.arrTime }}</div>
+                        <div class="airport">{{ f.arrCode }}</div>
+                        <div class="terminal">Terminal: {{ f.arrTerminal }}</div>
+                    </div>
+                </div>
+
+                <div class="action-button-container">
+                    <p-button 
+                        label="Select" 
+                        styleClass="p-button-rounded p-button-primary" 
+                        type="button"
+                        (click)="deleteFlight(f)"
+                    ></p-button>
+                </div>
+            </div>
+        </p-panel>
+    </div>
 }
