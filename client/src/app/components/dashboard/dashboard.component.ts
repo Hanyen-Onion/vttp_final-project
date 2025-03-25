@@ -3,6 +3,7 @@ import { UserStore } from '../../store/user.store';
 import { FlightOffer, UserInfo } from '../../models';
 import { Subscription } from 'rxjs';
 import { flight } from '../../db/flights.repository';
+import { session } from '../../db/session.repository';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,5 +22,11 @@ export class DashboardComponent implements OnInit{
     flight.getFlights().then(
       f => this.flights = f
     )
+
+    session.getSession().then(
+      u => this.user = u
+    )
   }
+
+
 }
