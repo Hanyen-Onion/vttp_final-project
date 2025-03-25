@@ -1,9 +1,12 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AutoCompleteService } from '../../services/autocomplete.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FlightQuery } from '../../models';
+import { FlightOffer, FlightQuery, UserInfo } from '../../models';
 import { FlightService } from '../../services/flight.service';
 import { Subscription } from 'rxjs';
+import { session } from '../../db/session.repository';
+import { UserStore } from '../../store/user.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-flight-search',
@@ -18,13 +21,24 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   private acSvc = inject(AutoCompleteService)
   private fSvc = inject(FlightService)
   private fb = inject(FormBuilder)
-
+  private userStore = inject(UserStore)
+  private router = inject(Router)
+  
   protected form!: FormGroup
   protected sub$!: Subscription
-  
-  ngOnInit(): void {
+  protected user!:UserInfo
+  protected depAirport?:any
+  protected arrAirport?:any
+  protected fResults:FlightOffer[] = []
 
+  ngOnInit(): void {
     this.form = this.createForm()
+    session.getSession().then(
+      u => this.user = u
+    )
+    this.userStore.flights$.subscribe(flights => {
+      console.log('Current flights:', flights);
+    });
   }
 
   ngAfterViewInit(): void { 
@@ -35,12 +49,33 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sub$.unsubscribe()
   }
 
+  chooseFlight(flight:FlightOffer) {
+    this.userStore.addFlight(flight)
+    this.router.navigate(['/dashboard'])
+  }
+
   processForm() {
-    const query:FlightQuery = this.form.value
+    this.arrAirport = this.form.value.arr_airport
+    this.depAirport = this.form.value.dep_airport
+    const query:FlightQuery = {
+      dep_airport:this.depAirport,
+      arr_airport:this.arrAirport,
+      dep_date:this.form.value.dep_date,
+      arr_date:this.form.value.arr_date,
+      trip_type:this.form.value.trip_type,
+      passenger:this.form.value.passenger,
+      class:this.form.value.class,
+      timezone:this.user.timezone,
+      currency:this.user.currency
+    }
 
     console.log(query)
-    this.sub$ = this.fSvc.searchFlight(query).subscribe()
-    this.form = this.createForm()
+    this.sub$ = this.fSvc.searchFlight(query).subscribe(
+      (result) => {
+        this.fResults = result
+        console.info('result: ', this.fResults)
+      }
+    )
   }
 
   async initAutocomplete() {
@@ -68,9 +103,9 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
       arr_airport: this.fb.control<string>('',[Validators.required]),
       dep_date: this.fb.control<string>('',[Validators.required]),
       arr_date: this.fb.control<string>('',[Validators.required]),
-      trip_type: this.fb.control<string>('',[Validators.required]),
+      trip_type: this.fb.control<string>('one-way',[Validators.required]),
       passenger: this.fb.control<number>(1,[Validators.required]),
-      class: this.fb.control<string>('',[Validators.required])
+      class: this.fb.control<string>('ECONOMY',[Validators.required])
     })
   }
 

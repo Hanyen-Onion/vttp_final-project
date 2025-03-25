@@ -1,0 +1,70 @@
+<p-card styleClass="login-form" class="flex justify-content-center">
+    <h2>Sign up</h2>
+    <form [formGroup]="signUpForm" (submit)="processSignUpForm()">
+        <p-floatlabel>
+            <input id="username" type="text" pInputText formControlName="username" />
+            <label for="username">Username</label>
+        </p-floatlabel>
+        <br>
+        <p-autoComplete 
+            id="location" 
+            formControlName="location" 
+            [suggestions]="filteredLocation" 
+            (completeMethod)="filterLocation($event)"
+            [dropdown]="true">
+        </p-autoComplete>
+        <label for="location">location</label>
+            @if (signUpForm.get('location')?.invalid && (signUpForm.get('location')?.dirty || signUpForm.get('location')?.touched)) {
+                @if (signUpForm.get('location')?.errors?.['required']) {
+                    <p-message severity="error" variant="simple" size="small">location is required</p-message>
+                }
+            }
+        <br>
+        <p-floatlabel>
+            <input id="email" type="email" pInputText formControlName="email" />
+            <label for="email">Email</label>
+            @if (signUpForm.get('email')?.invalid && (signUpForm.get('email')?.dirty || signUpForm.get('email')?.touched)) {
+                @if (signUpForm.get('email')?.errors?.['required']) {
+                    <p-message severity="error" variant="simple" size="small">Email is required</p-message>
+                } @else if (signUpForm.get('email')?.errors?.['email']) {
+                    <p-message severity="error" variant="simple" size="small">Please enter a valid email</p-message>
+                } @else if (signUpForm.get('email')?.errors?.['emailExists']) {
+                    <p-message severity="error" variant="simple" size="small">Email has already been registered</p-message>
+                } @else if (signUpForm.get('email')?.errors?.['emailNotFound']) {
+                    <p-message severity="error" variant="simple" size="small">Email not found</p-message>
+                }
+            }
+        </p-floatlabel>
+        <br>
+        <p-floatlabel>
+            <input id="password" type="password" pInputText formControlName="password" />
+            <label for="password">Password</label>
+        </p-floatlabel>
+            @if (signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty || signUpForm.get('password')?.touched)) {
+                @if (signUpForm.get('password')?.errors?.['required']) {
+                    <p-message severity="error" variant="simple" size="small">Password is required</p-message>
+                } @else if (signUpForm.get('password')?.errors?.['minlength']) {
+                    <p-message severity="error" variant="simple" size="small">Password must be at least 8 characters long</p-message>
+                } @else if (signUpForm.get('password')?.errors?.['maxlength']) {
+                    <p-message severity="error" variant="simple" size="small">Password cannot be more than 20 characters</p-message>
+                }
+            }
+        <p-floatlabel>
+            <input id="confirmPassword" type="password" pInputText formControlName="confirmPassword" />
+            <label for="confirmPassword">Confirm Password</label>
+        </p-floatlabel>
+            @if (signUpForm.get('confirmPassword')?.invalid && (signUpForm.get('confirmPassword')?.dirty || signUpForm.get('confirmPassword')?.touched)) {
+                @if (signUpForm.get('confirmPassword')?.errors?.['required']) {
+                    <p-message severity="error" variant="simple" size="small">Password is required</p-message>
+                } @else if (signUpForm.get('confirmPassword')?.errors?.['minlength']) {
+                    <p-message severity="error" variant="simple" size="small">Password must be at least 8 characters long</p-message>
+                } @else if (signUpForm.get('confirmPassword')?.errors?.['maxlength']) {
+                    <p-message severity="error" variant="simple" size="small">Password cannot be more than 20 characters</p-message>
+                }
+            }
+            @if (signUpForm.errors?.['passwordMismatch'] && (signUpForm.get('confirmPassword')?.dirty || signUpForm.get('confirmPassword')?.touched)) {
+                <p-message severity="error" variant="simple" size="small">Passwords do not match</p-message>
+            }
+        <p-button type="submit" [disabled]="isValid()">Sign up</p-button>
+    </form>
+</p-card>

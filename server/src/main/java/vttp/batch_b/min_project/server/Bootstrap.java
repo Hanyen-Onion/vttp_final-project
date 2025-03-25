@@ -7,14 +7,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import vttp.batch_b.min_project.server.models.dtos.FlightQuery;
-import vttp.batch_b.min_project.server.services.AirportService;
+import vttp.batch_b.min_project.server.services.FlightService;
 import vttp.batch_b.min_project.server.services.AuthService;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
 
     @Autowired
-    private AirportService airportSvc;
+    private FlightService airportSvc;
 
     @Autowired
     private AuthService authSvc;
@@ -30,21 +30,20 @@ public class Bootstrap implements CommandLineRunner {
         // }
 
         FlightQuery query = new FlightQuery(
-            "SIN",
             "TPE",
-            "2025-03-23",
-            "2025-03-29",
-            "Economy",
-            "one-way",
-            1
+            "SIN",
+            "2025-03-26",
+            "2025-04-01",
+            "ECONOMY",
+            "round-trip",
+            1,
+            "Asia/Dhaka",
+            "=BDT"
         );
-
-        //authSvc.getAmadeusAccessToken();
-       //airportSvc.getFlightOffer(query);
 
         try {
             File file = new File("../data/test.json");
-            //airportSvc.getflightData(file);
+            //airportSvc.getflightData(file, query);
 
         } catch (Exception e) {
             e.printStackTrace();

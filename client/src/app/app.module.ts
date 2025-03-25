@@ -9,8 +9,6 @@ import { LoginFormComponent } from './components/login-form/login-form.component
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { UserService } from './services/user.service';
 import { FlightSearchComponent } from './components/flight-search/flight-search.component';
-import { FlightListComponent } from './components/flight-list/flight-list.component';
-import { FlightDetailsComponent } from './components/flight-details/flight-details.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { providePrimeNG } from 'primeng/config';
@@ -20,14 +18,17 @@ import { PrimeModule } from './prime.module';
 import { UserStore } from './store/user.store';
 import { AutoCompleteService } from './services/autocomplete.service';
 import { FlightService } from './services/flight.service';
-import { AuthService } from './services/auth.service';
-
+import { SignupFormComponent } from './components/signup-form/signup-form.component';
+import { SessionRepository } from './db/session.repository';
+import { CountryRepository } from './db/country.repository';
+import { checkIfAuthenticated } from './guard';
 
 const routes: Routes = [
   { path:'', component:LoginFormComponent },
   { path:'login', component:LoginFormComponent },
-  {path:'dashboard', component:DashboardComponent},
-  {path:'search',component:FlightSearchComponent},
+  { path:'signup', component:SignupFormComponent},
+  { path:'dashboard', component:DashboardComponent, canActivate:[checkIfAuthenticated]},
+  { path:'search',component:FlightSearchComponent, canActivate:[checkIfAuthenticated]},
   
   { path:'**', redirectTo:'/', pathMatch:'full' }
 ];
@@ -38,15 +39,14 @@ const routes: Routes = [
     LoginFormComponent,
     DashboardComponent,
     FlightSearchComponent,
-    FlightListComponent,
-    FlightDetailsComponent,
     PaymentComponent,
     CalendarComponent,
+    SignupFormComponent,
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, {useHash: true}),
     PrimeModule
   ],
   providers: [
@@ -54,7 +54,8 @@ const routes: Routes = [
     AutoCompleteService,
     UserService,
     FlightService,
-    AuthService,
+    SessionRepository,
+    CountryRepository,
     provideHttpClient(), 
     providePrimeNG({
       theme: {
@@ -65,7 +66,6 @@ const routes: Routes = [
       }
     }),
     provideAnimationsAsync(),
-    UserService
     
   ],
   bootstrap: [AppComponent]

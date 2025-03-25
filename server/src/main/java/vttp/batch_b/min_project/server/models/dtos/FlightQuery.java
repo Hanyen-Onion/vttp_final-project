@@ -7,8 +7,7 @@ public record FlightQuery(
     String arrDate,
     String cabinClass,
     String tripType,
-    Integer passenger
-    // String depTz,
-    // String arrTz
-    ) 
-{}
+    Integer passenger,
+    String timezone,
+    String currency
+) {}

@@ -93,11 +93,8 @@ public class AuthService {
         String url = UriComponentsBuilder.fromUriString(GOOGLE_TOKEN_URL)
                                         .queryParam("id_token", tokenId)
                                         .toUriString();
-        
-        System.out.println(">>>>url built: " + url);
 
-        RequestEntity<Void> req = RequestEntity.get(url).build();
-                                                
+        RequestEntity<Void> req = RequestEntity.get(url).build();                                     
         RestTemplate template = new RestTemplate();
 
         try {

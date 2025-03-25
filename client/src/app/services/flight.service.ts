@@ -1,14 +1,14 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { FlightDetail, FlightQuery } from "../models";
+import { FlightOffer, FlightQuery } from "../models";
 
 Injectable()
 export class FlightService {
 
     private http = inject(HttpClient)
 
-    searchFlight(query:FlightQuery): Observable<FlightDetail> {
+    searchFlight(query:FlightQuery): Observable<FlightOffer[]> {
 
         const param = new HttpParams()
             .set('dep_airport', query.dep_airport)
@@ -18,13 +18,15 @@ export class FlightService {
             .set('trip_type', query.trip_type)
             .set('passenger', query.passenger)
             .set('class', query.class)
+            .set('timezone', query.timezone)
+            .set('currency', query.currency)
 
         console.info(param)
         
         const header = new HttpHeaders()
             .set('Content-Type', 'application/json')
 
-        return this.http.get<FlightDetail>('/api/search', { headers:header ,params: param })
+        return this.http.get<FlightOffer[]>('/api/search', { headers:header ,params: param })
     }
 }
 

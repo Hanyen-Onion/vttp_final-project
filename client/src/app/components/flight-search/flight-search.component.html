@@ -1,36 +1,118 @@
-<H1>Flight search</H1>
-<form [formGroup]="form" (submit)="processForm()">
-    <label>Depart:</label>
-    <input 
-        #dep_airport
-        type="text" 
-        formControlName="dep_airport" 
-        id="dep_airport" 
-        placeholder="Enter departure airport">
-    <label>Arrive:</label>
-    <input 
-        #arr_airport
-        type="text" 
-        formControlName="arr_airport" 
-        id="arr_airport" 
-        placeholder="Enter arrival airport">
+<p-card header="Flight search">
+    <form [formGroup]="form" (submit)="processForm()">
+        <label>Depart:</label>
+        <input 
+            #dep_airport
+            type="text" 
+            formControlName="dep_airport" 
+            id="dep_airport" 
+            placeholder="Enter departure airport">
+        <label>Arrive:</label>
+        <input 
+            #arr_airport
+            type="text" 
+            formControlName="arr_airport" 
+            id="arr_airport" 
+            placeholder="Enter arrival airport">
 
-    <br>
-    from <input type="date" formControlName="dep_date" id="dep_date">
-    to <input type="date" formControlName="arr_date" id="arr_date">
-    <br>
-    <input type="radio" value="one-way" formControlName="trip_type" id="one-way"> one-way
-    <input type="radio" value="round-trip" formControlName="trip_type" id="round-trip"> round-trip
-    class: 
-    <select formControlName="class" id="class">
-        <option value="Economy">Economy Class</option>
-        <option value="Business">Business Class</option>
-        <option value="First">First Class</option>
-        <option value="Premium_Economy">Premium Economy Class</option>
-    </select>
-    passenger <input type="number" name="passenger" formControlName="passenger" id="passenger">
-    <button type="submit">search</button>
-</form>
+        <br>
+        from <input type="date" formControlName="dep_date" id="dep_date">
+        to <input type="date" formControlName="arr_date" id="arr_date">
+        <br>
+        <input type="radio" value="one-way" formControlName="trip_type" id="one-way"> one way
+        <input type="radio" value="round-trip" formControlName="trip_type" id="round-trip"> round trip
+        class: 
+        <select formControlName="class" id="class">
+            <option value="ECONOMY" selected>Economy Class</option>
+            <option value="BUSINESS">Business Class</option>
+            <option value="FIRST">First Class</option>
+            <option value="PREMIUM_ECONOMY">Premium Economy Class</option>
+        </select>
+        passenger <input type="number" name="passenger" formControlName="passenger" id="passenger">
+        <button type="submit">search</button>
+    </form>
+</p-card>
+
+<hr>
+
+@for (f of fResults; let idx = $index; track idx) {
+    <div class="card flight-card">
+        <p-panel 
+        [toggleable]="true" 
+        [collapsed]="true"
+        expandIcon="pi pi-chevron-up" 
+        collapseIcon="pi pi-chevron-down">
+            <ng-template pTemplate="header">
+                <div class="flight-header">
+                    <div class="flight-main-info">
+                        <span class="carrier">{{ f.carrier }}</span>
+                        <span class="flight-time">{{ f.depTime }} - {{ f.arrTime }}</span>
+                        <span class="duration">{{ f.duration }}</span>
+                    </div>
+                    <div class="flight-price">{{ f.price | currency:f.currency:'symbol-narrow' }}</div>
+                </div>
+            </ng-template>
+    
+            <div class="flight-details">
+                <div class="flight-journey">
+                    <div class="departure">
+                        <div class="time">{{ f.depTime }}</div>
+                        <div class="airport">{{ f.depCode }}</div>
+                        <div class="terminal">Terminal: {{ f.depTerminal }}</div>
+                    </div>
+    
+                    <div class="journey-line">
+                        <div class="duration-indicator">{{ f.duration }}</div>
+                    </div>
+    
+                    <div class="arrival">
+                        <div class="time">{{ f.arrTime }}</div>
+                        <div class="airport">{{ f.arrCode }}</div>
+                        <div class="terminal">Terminal: {{ f.arrTerminal }}</div>
+                    </div>
+                </div>
+
+                <div class="action-button-container">
+                    <p-button 
+                        label="Select" 
+                        styleClass="p-button-rounded p-button-primary" 
+                        type="button"
+                        (click)="chooseFlight(f)"
+                    ></p-button>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+}
+
+<!-- <div class="card">
+    <p-panel 
+    [toggleable]="true" 
+    [collapsed]="true"
+    expandIcon="pi pi-chevron-up" 
+    collapseIcon="pi pi-chevron-down">
+        <ng-template #header>
+            <div class="">
+                {{ f.carrier}} {{ f.depTime}} - {{ f.arrTime}} {{ f.duration}} {{ f.price | currency:f.currency:'symbol-narrow'}}
+            </div>
+        </ng-template>
+
+        <p class="m-0">
+            {{ f.depTime}} {{ f.depCode}} Terminal: {{ f.depTerminal}}
+            {{ f.duration}} 
+            {{ f.arrTime}} {{ f.arrCode}} Terminal: {{ f.arrTerminal}}
+        </p>
+    </p-panel>
+</div> -->
+
+
+
+
+
+
+
+
+
 
 
 

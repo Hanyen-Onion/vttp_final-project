@@ -1,12 +1,9 @@
 package vttp.batch_b.min_project.server.models;
 
-import java.util.UUID;
-
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
 public class FlightOffer {
-    private String id;
     private String duration;
     private String depCode;
     private String depTerminal;
@@ -14,20 +11,13 @@ public class FlightOffer {
     private String arrCode;
     private String arrTerminal;
     private String arrTime;
-    private String airline;
-    private String price;
+    private Double price;
     private String currency;
     private String carrier;
     private String date;
-    //private String cabinClass;
-
-    public FlightOffer() {
-        this.id = UUID.randomUUID().toString().substring(0, 8);
-    }
 
     public static JsonObject toJson(FlightOffer flight) {
         JsonObject json = Json.createObjectBuilder()
-            .add("id", flight.getId())
             .add("depCode", flight.getDepCode())
             .add("depTerminal", flight.getDepTerminal())
             .add("depTime", flight.getDepTime())
@@ -36,7 +26,6 @@ public class FlightOffer {
             .add("arrTime", flight.getArrTime())
             .add("duration", flight.getDuration())
             .add("date", flight.getDate())
-            .add("airline", flight.getAirline())
             .add("carrier", flight.getCarrier())
             .add("price", flight.getPrice())
             .add("currency", flight.getCurrency())
@@ -44,7 +33,22 @@ public class FlightOffer {
         return json;
     }
 
-    public String getId() {    return id;}
+    public static FlightOffer fromJsonToObj(JsonObject json) {
+        FlightOffer fo = new FlightOffer();
+        fo.setDepCode(json.getString("depCode"));
+        fo.setDepTerminal(json.getString("depTerminal"));
+        fo.setDepTime(json.getString("depTime"));
+        fo.setArrCode(json.getString("arrCode"));
+        fo.setArrTerminal(json.getString("arrTerminal"));
+        fo.setArrTime(json.getString("arrTime"));
+        fo.setDuration(json.getString("duration"));
+        fo.setDate(json.getString("date"));
+        fo.setCarrier(json.getString("carrier"));
+        fo.setPrice((json.getJsonNumber("price").doubleValue()));
+        fo.setCurrency(json.getString("currency"));
+        
+       return fo;
+    }
 
     public String getDuration() {    return duration;}
     public void setDuration(String duration) {    this.duration = duration;}
@@ -67,11 +71,8 @@ public class FlightOffer {
     public String getArrTime() {    return arrTime;}
     public void setArrTime(String arrTime) {    this.arrTime = arrTime;}
     
-    public String getAirline() {    return airline;}
-    public void setAirline(String airline) {    this.airline = airline;}
-    
-    public String getPrice() {    return price;}
-    public void setPrice(String price) {    this.price = price;}
+    public Double getPrice() {    return price;}
+    public void setPrice(Double price) {    this.price = price;}
     
     public String getCurrency() {    return currency;}
     public void setCurrency(String currency) {    this.currency = currency;}
@@ -93,9 +94,10 @@ public class FlightOffer {
         sb.append(", arrCode=").append(arrCode);
         sb.append(", arrTerminal=").append(arrTerminal);
         sb.append(", arrTime=").append(arrTime);
-        sb.append(", airline=").append(airline);
         sb.append(", price=").append(price);
         sb.append(", currency=").append(currency);
+        sb.append(", carrier=").append(carrier);
+        sb.append(", date=").append(date);
         sb.append('}');
         return sb.toString();
     }

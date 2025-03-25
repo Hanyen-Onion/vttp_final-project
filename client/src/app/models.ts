@@ -1,21 +1,28 @@
-//user and login
-export interface UserInfo {
-    email:string 
-    username:string
-}
-
+//for both login and signup
 export interface LoginInfo {
     email:string 
     username:string
     password:string
+    location:string
+    timezone:string
+    currency:string
+}
+
+//session
+export interface UserInfo {
+    email:string 
+    username:string
+    location:string
+    timezone:string
+    currency:string
 }
 
 export interface UserSlice {
     user: UserInfo
-    authenticated:boolean
+    flights: FlightOffer[]
 }
 
-//flight search and result
+//flight search
 export interface FlightQuery {
     dep_airport:string
     arr_airport:string
@@ -24,6 +31,22 @@ export interface FlightQuery {
     trip_type:string
     passenger:number
     class:string
+    timezone:string
+    currency:string
+}
+
+export interface FlightOffer {
+    duration:string,
+    depCode:string,
+    depTerminal:string,
+    depTime:string, 
+    arrCode:string,
+    arrTerminal:string,
+    arrTime:string,
+    price:number,
+    currency:string,
+    carrier:string,
+    date:string
 }
 
 export interface AutocompleteResult {
@@ -31,19 +54,15 @@ export interface AutocompleteResult {
     airport: string
 }
 
-export interface FlightDetail {
-
-}
-// departure_airport_code:string
-// arrival_airport_code:string
-// departure_date:string
-// number_of_adults:number
-// cabin_class:string
-// currency:string
-// region:string
-
 export interface ErrorObject {
-    message: string;
-    status: number;
-    timestamp: Date;
+    message: string
+    status: number
+    timestamp: Date
+}
+
+export interface Country {
+    id?:number
+    country: string //singapore,singapore
+    timezone: string
+    currency: string
 }

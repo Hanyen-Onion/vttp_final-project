@@ -65,3 +65,22 @@ db.airports.updateMany(
 )
 
 mongoimport -d flight_planner -c countries  --type json --file countries.json --jsonArray
+
+
+// db.timezones.aggregate([
+//     {  $lookup:  {   from:'airports',
+//                      foreignField:'city',
+//                      localField:'City',
+//                      as: 'airport',
+//                      pipeline: [ { $project: {iata:1, _id:0, name:1}} ]
+//     }},
+//     {   $lookup: {  from:'countries',
+//                     foreignField:'isoAlpha3',
+//                     localField:'IsoAlpha3',
+//                     as: 'currency',
+//                     pipeline: [ { $project: {'currency.code':1, _id:0}}]
+//     }},
+//     {   $unwind: '$airport'},
+//     {  $match: { "airport.name": { $regex: new RegExp(".*" + 'Singapore Changi' + ".*", "i")}}},
+//     {   $unwind: '$currency'}
+// ])

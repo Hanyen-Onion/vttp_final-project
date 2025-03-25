@@ -1,3 +1,5 @@
 <p>dashboard works!</p>
 
-<h2>login successful</h2>
+@for (f of flights; let idx = $index; track idx) {
+    {{f.price}}
+}

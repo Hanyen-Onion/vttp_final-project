@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import vttp.batch_b.min_project.server.exceptions.QueryNotReceivedException;
-import vttp.batch_b.min_project.server.models.Airport;
+import vttp.batch_b.min_project.server.models.FlightOffer;
 import vttp.batch_b.min_project.server.models.dtos.FlightQuery;
-import vttp.batch_b.min_project.server.services.AirportService;
+import vttp.batch_b.min_project.server.services.FlightService;
 
 @Controller
 @RequestMapping("/api")
@@ -27,38 +27,38 @@ public class FlightSearchController {
     private String apiKey;
 
     @Autowired
-    private AirportService airSvc;
+    private FlightService airSvc;
 
     @GetMapping(path="/search", 
         consumes=MediaType.APPLICATION_JSON_VALUE
         //produces=MediaType.APPLICATION_JSON_VALUE
         )
-    public ResponseEntity<List<JsonObject>> getSearch (@RequestParam MultiValueMap<String, String> form) {
+    public ResponseEntity<List<FlightOffer>> getSearch (@RequestParam MultiValueMap<String, String> form) {
         
         if (form.getFirst("dep_airport") != null || form.getFirst("arr_airport") != null) {
             
             String depAir = form.getFirst("dep_airport");
             String arrAir = form.getFirst("arr_airport");
             
-            Airport dep = airSvc.getDataWithAirport(depAir);
-            dep.setAirport(depAir);
-            Airport arr = airSvc.getDataWithAirport(arrAir);
-            arr.setAirport(arrAir);
+            String depIata = airSvc.getDataWithAirport(depAir);
+      
+            String arrIata = airSvc.getDataWithAirport(arrAir);
 
-            System.out.println(">>> depAirport:\n" + dep);
-            System.out.println(">>> arrAirport:\n" + arr);
     
             FlightQuery query = new FlightQuery(
-                dep.getIata(),
-                arr.getIata(),
+                depIata,
+                arrIata,
                 form.getFirst("dep_date"),
                 form.getFirst("arr_date"),
                 form.getFirst("class"),
                 form.getFirst("trip_type"),
-                Integer.valueOf(form.getFirst("passenger"))
+                Integer.valueOf(form.getFirst("passenger")),
+                form.getFirst("timezone"),
+                form.getFirst("currency")
             );
             
-            List<JsonObject> flights = airSvc.getFlights(query);
+            List<FlightOffer> flights = airSvc.getFlights(query);
+            //System.out.println("at controller: " + flights);
             return ResponseEntity.ok(flights);
         } 
         throw new QueryNotReceivedException("query not found");

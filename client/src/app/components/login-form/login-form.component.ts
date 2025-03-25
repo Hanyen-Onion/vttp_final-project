@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { catchError, debounce, debounceTime, first, Observable, of, Subscription, switchMap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { LoginInfo, UserInfo } from '../../models';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoginInfo } from '../../models';
 import { UserStore } from '../../store/user.store';
+import { Router } from '@angular/router';
 
 declare global {
   interface Window {
@@ -22,95 +23,53 @@ export class LoginFormComponent implements OnInit {
   private userSvc = inject(UserService)
   private fb = inject(FormBuilder)
   private userStore = inject(UserStore)
+  private router = inject(Router)
 
   protected loginForm!:FormGroup
-  protected signUpForm!:FormGroup
+  protected isLogin:boolean = true
   protected sub$!:Subscription
-  protected isLogin:boolean = false
+  
 
   ngOnInit(): void {
     this.loginForm = this.createLoginForm()
-    this.signUpForm = this.createSignUpForm()
     //this.initGoogleSignIn()
   }
 
   processLoginForm(){
-    const email = this.loginForm.value.email
-    const pw = this.loginForm.value.password
+    const user: LoginInfo = {
+      email:this.loginForm.value.email,
+      password: this.loginForm.value.password,
+      username: '',
+      location: '',
+      timezone: '',
+      currency: ''
+    }
+    this.userSvc.postLogin(user).then(
+      result => {
+        //save to slice
+        this.userStore.addUser(result)
+        console.info(result)
+    })
 
     this.createLoginForm()
   }
 
-  processSignUpForm() {
-    const user:LoginInfo = {
-      email: this.signUpForm.value.email,
-      username: this.signUpForm.value.username,
-      password: this.signUpForm.value.password
-    }
+  isValid() {
+    return this.loginForm.pristine || this.loginForm.invalid
+  }
 
-
-    this.createSignUpForm()
+  toSignup() {
+    this.router.navigate(['/signup'])
   }
 
   createLoginForm():FormGroup {
     this.isLogin = true
     return this.fb.group({
-      email: this.fb.control<string>('',[ Validators.required, Validators.email], [this.emailSignedUpValidator()]),
+      email: this.fb.control<string>('',[ Validators.required, Validators.email], [this.userSvc.emailSignedUpValidator(this.isLogin)]),
       password: this.fb.control<string>('', [ Validators.required, 
                                               Validators.minLength(6), 
                                               Validators.maxLength(20)])
     })
-  }
-
-  createSignUpForm() :FormGroup {
-    return this.fb.group({
-      username: this.fb.control<string>('', [Validators.required, Validators.minLength(4)]),
-      email: this.fb.control<string>('',[ Validators.required, Validators.email], [this.emailSignedUpValidator()]),
-      password: this.fb.control<string>('', [ Validators.required, 
-                                              Validators.minLength(8), 
-                                              Validators.maxLength(20)]),
-      confirmPassword: this.fb.control<string>('', [ Validators.required, 
-                                                Validators.minLength(8), 
-                                                Validators.maxLength(20)])
-    }, 
-    { validators:this.passwordMatchValidator})
-  }
-
-  emailSignedUpValidator(): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      if (!control.value) {
-        return of(null);
-      }
-      return this.userSvc.validateEmail(control.value).pipe(
-        debounceTime(300),
-        switchMap(() => {
-          //for login
-          if (this.isLogin)
-            return of(null)
-          else
-            //for signup
-            return of({ emailExists: true})
-        }),
-        catchError(error => {
-          if (error.message === 'email not registered') {
-            if (this.isLogin)
-              return of({ emailNotFound: true })
-            else
-            return of(null)
-          }
-          console.error('Email validation error:', error)
-          return of({ serverError: true })
-        }),
-        first() 
-      )
-    }
-  }
-
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
-    
-    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
   initGoogleSignIn() {

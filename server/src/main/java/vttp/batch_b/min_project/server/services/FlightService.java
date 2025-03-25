@@ -1,8 +1,6 @@
 package vttp.batch_b.min_project.server.services;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -22,17 +20,15 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp.batch_b.min_project.server.exceptions.AirportNotFoundException;
-import vttp.batch_b.min_project.server.models.Airport;
 import vttp.batch_b.min_project.server.models.FlightOffer;
 import vttp.batch_b.min_project.server.models.dtos.FlightQuery;
-import vttp.batch_b.min_project.server.repository.AirportRepository;
+import vttp.batch_b.min_project.server.repository.LocationRepository;
 import vttp.batch_b.min_project.server.repository.FlightResultsRepository;
+import static vttp.batch_b.min_project.server.services.AuthService.AMADEUS;
 import vttp.batch_b.min_project.server.utils.TimeParser;
 
-import static vttp.batch_b.min_project.server.services.AuthService.AMADEUS;
-
 @Service
-public class AirportService {
+public class FlightService {
 
     @Value("${forex.api.key}")
     private String exApiKey;
@@ -41,7 +37,7 @@ public class AirportService {
     private AuthService authSvc;
 
     @Autowired
-    private AirportRepository airRepo;
+    private LocationRepository locatRepo;
 
     @Autowired
     private FlightResultsRepository fRepo;
@@ -49,70 +45,73 @@ public class AirportService {
     public static final String EX_URL = "https://api.exchangeratesapi.io/v1/latest";
     public static final String FLIGHT_OFFER_URL = "https://test.api.amadeus.com/v2/shopping/flight-offers";
 
-    public List<JsonObject> getFlights(FlightQuery query) {
-
+    public List<FlightOffer> getFlights(FlightQuery query) {
         if (!fRepo.exists(keyName(query)))
-            getFlightOffer(query);
-            
-        return fRepo.getFlightsOffers(keyName(query));
+            getFlightOfferFromApi(query);
+
+        List<JsonObject> jsons = fRepo.getFlightsOffers(keyName(query));
+        List<FlightOffer> fos = new ArrayList<>();
+        
+        jsons.forEach(j -> {
+            fos.add(FlightOffer.fromJsonToObj(j));
+        });
+        return fos;
     }
 
-    public void getFlightOffer(FlightQuery query) {
-
+    public void getFlightOfferFromApi(FlightQuery query) {
         String url = "";
 
         if (query.tripType().equals("one-way")) {
             url = UriComponentsBuilder
             .fromUriString(FLIGHT_OFFER_URL)
-            .queryParam("originLocationCode", query.depAirport())
-            .queryParam("destinationLocationCode", query.arrAirport())
+            .queryParam("originLocationCode", query.depAirport().toUpperCase())
+            .queryParam("destinationLocationCode", query.arrAirport().toUpperCase())
             .queryParam("departureDate", query.depDate())
             .queryParam("adults", query.passenger())
             .queryParam("travelClass", query.cabinClass().toUpperCase())
             .queryParam("nonStop", true)
+            .queryParam("currencyCode", query.currency().toUpperCase())
             .queryParam("max", 50)
             .toUriString();
         } else if (query.tripType().equals("round-trip")) {
             url = UriComponentsBuilder
             .fromUriString(FLIGHT_OFFER_URL)
-            .queryParam("originLocationCode", query.depAirport())
-            .queryParam("destinationLocationCode", query.arrAirport())
+            .queryParam("originLocationCode", query.depAirport().toUpperCase())
+            .queryParam("destinationLocationCode", query.arrAirport().toUpperCase())
             .queryParam("departureDate", query.depDate())
             .queryParam("returnDate", query.arrDate())
             .queryParam("adults", query.passenger())
             .queryParam("travelClass", query.cabinClass().toUpperCase())
             .queryParam("nonStop", true)
+            .queryParam("currencyCode", query.currency().toUpperCase())
             .queryParam("max", 50)
             .toUriString();
         }
         
         String accessCode = authSvc.retrieveAccessToken(AMADEUS);
-
         RequestEntity<Void> req = RequestEntity
             .get(url)
             .header("Authorization", "Bearer " + accessCode)
             .build();
         
         RestTemplate template = new RestTemplate();
-
         try {
             ResponseEntity<String> resp = template.exchange(req, String.class);
             String payload = resp.getBody();
-            String key = keyName(query);
-            
-            //getflightData(payload, "timezone", key);
+            getflightData(payload, query);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void getflightData(String payload, String timezone, String key) throws IOException {
-    //public void getflightData(File payload, String timezone, String keyName) throws IOException {
+    public void getflightData(String payload, FlightQuery query) throws IOException {
+    //public void getflightData(File payload, FlightQuery query) throws IOException {
         //JsonReader jr = Json.createReader(new BufferedReader(new FileReader(payload)));
         JsonReader jr = Json.createReader(new StringReader(payload));
         JsonObject json = jr.readObject();
         JsonArray data = json.getJsonArray("data");
+        //System.out.println(json);
 
         List<FlightOffer> flights = new ArrayList<>();
 
@@ -121,7 +120,6 @@ public class AirportService {
             
             for (int j = 0; j < segments.size(); j++) {
                 JsonObject seg = segments.getJsonObject(j);
-                //String segId = seg.getString("id");
                 String depCode = seg.getJsonObject("departure").getString("iataCode", "");
                 String depTerminal = seg.getJsonObject("departure").getString("terminal","");
                 String depTime = seg.getJsonObject("departure").getString("at","");
@@ -139,39 +137,37 @@ public class AirportService {
                 FlightOffer fo = new FlightOffer();
                 fo.setDepCode(depCode);
                 fo.setDepTerminal(depTerminal);
-                fo.setDepTime(TimeParser.parseDateTime(depTime, timezone));
+                fo.setDepTime(TimeParser.parseDateTime(depTime, query.timezone()));
                 fo.setArrCode(arrCode);
                 fo.setArrTerminal(arrTerminal);
-                fo.setArrTime(TimeParser.parseDateTime(arrTime, timezone));
+                fo.setArrTime(TimeParser.parseDateTime(arrTime, query.timezone()));
                 fo.setCurrency(currency);
                 fo.setCarrier(carrier);
-                fo.setPrice(price);
+                fo.setPrice(Double.valueOf(price));
                 fo.setDuration(TimeParser.parseDuration(duration));
                 fo.setDate(date);
+                System.out.println("fo: " + fo);
                 flights.add(fo);
             }           
         }
-    fRepo.cacheFlightOffers(flights, key);
+    fRepo.cacheFlightOffers(flights, keyName(query));
     }
 
     public String keyName(FlightQuery query) {
         return "flights:" + query.depAirport() + ":" + query.depAirport() + ":" + query.depDate();
     }
 
-    public Airport getDataWithAirport(String airport) {
-
-        List<Document> docs = airRepo.findAirportByName(
+    public String getDataWithAirport(String airport) {
+        
+        List<Document> docs = locatRepo.findAirportByName(
             airport.toLowerCase().replace("airport", "").strip()
         );
-
         //no airport found
         if (docs.size() < 1) {
             throw new AirportNotFoundException("cannot find %s airport".formatted(airport));
         }
-
         Document doc = docs.get(0);
-        
-        return Airport.docToAirport(doc, airport);
+        return doc.getString("iata");
     }
 
     public void getExchangeRate(String currency) {
@@ -185,7 +181,6 @@ public class AirportService {
         RequestEntity req = RequestEntity.get(url).build();
 
         RestTemplate template = new RestTemplate();
-
         try {
             ResponseEntity<String> resp = template.exchange(req, String.class);
 
@@ -193,7 +188,6 @@ public class AirportService {
         } catch (Exception e) {
         }
     }
-
 
 }
 

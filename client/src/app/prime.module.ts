@@ -7,6 +7,8 @@ import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { PaginatorModule } from 'primeng/paginator';
+import { AccordionModule } from 'primeng/accordion';
+import { PanelModule } from 'primeng/panel';
 
 @NgModule({
     exports: [
@@ -18,6 +20,8 @@ import { PaginatorModule } from 'primeng/paginator';
         MessageModule,
         AutoCompleteModule,
         PaginatorModule,
+        AccordionModule,
+        PanelModule
     ]
 })
 

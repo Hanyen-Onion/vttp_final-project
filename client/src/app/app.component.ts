@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { UserInfo } from './models';
+import { session } from './db/session.repository';
 
 @Component({
   selector: 'app-root',
@@ -15,10 +17,15 @@ export class AppComponent implements OnInit {
   //private httpSvc = inject()
   private activatedRoute = inject(ActivatedRoute)
 
-  protected sub$!:Subscription
+  protected user!:UserInfo
 
   ngOnInit(): void {
-    
+    this.getLoggedInUser
+  }
+
+  async getLoggedInUser() {
+    this.user = await session.session.toArray().then(users => users[0]);
+    console.info('session user: ', this.user)
   }
 
 

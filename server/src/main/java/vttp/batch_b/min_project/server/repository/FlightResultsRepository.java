@@ -33,17 +33,16 @@ public class FlightResultsRepository {
                 return Json.createReader(new StringReader(str)).readObject();
             })
             .collect(Collectors.toList());
+        //System.out.println("smembers: " + flights);
         return flights;
     }
 
     //sadd
     public void cacheFlightOffers(List<FlightOffer> flights, String key) throws JsonProcessingException {
-
         try {
             flights.forEach(f -> {
                 template.opsForSet().add(key, FlightOffer.toJson(f).toString());
             });
-
             //expires
             template.expire(key, Duration.ofHours(1));
 
