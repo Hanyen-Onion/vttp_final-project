@@ -28,7 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: hyonion/flyeasy:latest
+          tags: hyonion/fly:latest
       
       - name: Install Railway CLI
         run: npm install -g @railway/cli
@@ -41,4 +41,4 @@ jobs:
         run: |
           railway link ${{ env.RAILWAY_PROJECT_ID }}
           railway up --service ${{ env.RAILWAY_SERVICE_NAME }} \
-            --image hyonion/flyeasy:latest
+            --image hyonion/fly:latest
