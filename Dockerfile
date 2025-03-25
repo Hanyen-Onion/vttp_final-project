@@ -5,7 +5,7 @@ WORKDIR /src
 
 RUN npm i -g @angular/cli
 
-copy data data
+COPY data data
 COPY client/public public
 COPY client/src src
 COPY client/*.json .

@@ -35,13 +35,13 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+                "src/manifest.json",
+                "public/icons"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css",
-              "src/manifest.json",
-              "public/icons"
+              "src/styles.css"
             ],
             "scripts": []
           },
