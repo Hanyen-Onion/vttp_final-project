@@ -28,9 +28,9 @@ export class DashboardComponent implements OnInit{
     )
   }
 
-  deleteFlight(flight:FlightOffer) {
-    this.flights.splice
+  deleteFlight(idx:number) {
+    this.flights.splice(idx,1)
   }
 
-
+//confirm then go to payment
 }
