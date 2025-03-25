@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit{
   }
 
   deleteFlight(flight:FlightOffer) {
-    
+    this.flights.splice
   }
 
 

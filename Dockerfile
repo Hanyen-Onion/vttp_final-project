@@ -15,18 +15,16 @@ RUN npm ci && ng build
 #build spring boot
 FROM openjdk:23-jdk AS j-build
 
-WORKDIR /src
+WORKDIR /workdir
 
 COPY server/.mvn .mvn
 COPY server/src src
 COPY server/mvnw .
 COPY server/pom.xml .
 
-RUN echo "Initial server directory structure:" && ls -la src/main/resources || echo "resources directory doesn't exist yet"
-
 # copy angular files to static
 COPY --from=ng-build \
-        /workdir/dist/client/browser/* src/main/resources/static
+        /workdir/dist/client/browser/* workdir/src/main/resources/static
 
 RUN chmod a+x mvnw && ./mvnw package -Dmaven.test.skip=true
 
