@@ -1,7 +1,7 @@
 # build angular
 FROM node:23 AS ng-build
 
-WORKDIR /src
+WORKDIR /workdir
 
 RUN npm i -g @angular/cli
 
@@ -15,7 +15,7 @@ RUN npm ci && ng build
 #build spring boot
 FROM openjdk:23-jdk AS j-build
 
-WORKDIR /src
+WORKDIR /workdir
 
 COPY server/.mvn .mvn
 COPY server/src src
