@@ -39,6 +39,6 @@ jobs:
           RAILWAY_SERVICE_NAME: fulfilling-blessing
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway link ${{ env.RAILWAY_PROJECT_ID }}
+          railway link 
           railway up --service ${{ env.RAILWAY_SERVICE_NAME }} \
             --image hyonion/fly:latest
