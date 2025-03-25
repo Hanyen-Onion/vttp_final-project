@@ -10,7 +10,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { UserService } from './services/user.service';
 import { FlightSearchComponent } from './components/flight-search/flight-search.component';
 import { PaymentComponent } from './components/payment/payment.component';
-import { CalendarComponent } from './components/calendar/calendar.component';
 import { providePrimeNG } from 'primeng/config';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import Aura from '@primeng/themes/aura';
@@ -40,7 +39,6 @@ const routes: Routes = [
     DashboardComponent,
     FlightSearchComponent,
     PaymentComponent,
-    CalendarComponent,
     SignupFormComponent,
   ],
   imports: [
