@@ -32,18 +32,12 @@ jobs:
       
       - name: Install Railway CLI
         run: npm install -g @railway/cli
-
-      - name: Login to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway login --token ${{ env.RAILWAY_TOKEN }}
       
       - name: Deploy to Railway
         env:
           RAILWAY_PROJECT_ID: a5969594-5044-4c33-aebc-4c99950d0e32
+          RAILWAY_SERVICE_ID: 4b31d359-1e56-46cc-aad3-d01a2629a94a
           RAILWAY_SERVICE_NAME: fulfilling-blessing
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway link 
-          railway up --service ${{ env.RAILWAY_SERVICE_NAME }} \
-            --image hyonion/fly:latest
+          railway up --service ${{ env.RAILWAY_SERVICE_ID }} 
