@@ -37,7 +37,11 @@
                 "input": "public"
               },
                 "src/manifest.json",
-                "public/icons"
+              {
+                "glob": "**/*",
+                "input": "/public/icons",
+                "output": "/icons"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
