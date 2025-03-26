@@ -22,6 +22,7 @@ import { SessionRepository } from './db/session.repository';
 import { CountryRepository } from './db/country.repository';
 import { checkIfAuthenticated } from './guard';
 import { FlightRepository } from './db/flights.repository';
+import { PaymentService } from './services/payment.service';
 
 const routes: Routes = [
   { path:'', component:LoginFormComponent },
@@ -57,6 +58,7 @@ const routes: Routes = [
     SessionRepository,
     CountryRepository,
     FlightRepository,
+    PaymentService,
     provideHttpClient(), 
     providePrimeNG({
       theme: {

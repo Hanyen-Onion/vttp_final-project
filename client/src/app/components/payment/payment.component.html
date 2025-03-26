@@ -47,30 +47,30 @@
         <div class="card payment-info">
             <h2 class="section-title">Payment Information</h2>
             
-            <form [formGroup]="form" >
+            <form  >
                 <div class="form-group">
                     <label for="name">Name on Card</label>
-                    <input type="text" id="name" formControlName="name">
+                    <input type="text" id="name" >
                 </div>
                 
                 <div class="form-group card-number-wrapper">
                     <label for="card-number">Card Number</label>
-                    <input type="text" id="card-number" formControlName="cardNumber">
+                    <input type="text" id="card-number" >
                     <div class="card-icons">
-                        <img src="/api/placeholder/45/30" alt="Visa" class="card-icon">
+                        <!-- <img src="/api/placeholder/45/30" alt="Visa" class="card-icon">
                         <img src="/api/placeholder/45/30" alt="Mastercard" class="card-icon">
-                        <img src="/api/placeholder/45/30" alt="Amex" class="card-icon">
+                        <img src="/api/placeholder/45/30" alt="Amex" class="card-icon"> -->
                     </div>
                 </div>
                 
                 <div class="form-group input-group">
                     <div>
                         <label for="expiry">Expiration Date</label>
-                        <input type="text" id="expiry" formControlName="expirationDate">
+                        <input type="text" id="expiry" >
                     </div>
                     <div>
                         <label for="cvv">Security Code</label>
-                        <input type="text" id="cvv" formControlName="cvv">
+                        <input type="text" id="cvv" >
                     </div>
                 </div>
                 

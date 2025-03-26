@@ -129,5 +129,7 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
       class: this.fb.control<string>('ECONOMY',[Validators.required])
     })
   }
-
+  testnav() {
+    this.router.navigate(['/dashboard'])
+  }
 }
