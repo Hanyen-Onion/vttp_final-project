@@ -105,6 +105,9 @@ export class SignupFormComponent implements OnInit{
       console.log('New country sample:', newCountries.length > 0 ? newCountries[0] : 'No data')
       return;
     }
+    for (const country of countries) {
+      this.locationMap.set(this.formatLocationKey(country), country)
+    }
   }
 
   filterLocation(event: any): void {
