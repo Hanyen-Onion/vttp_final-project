@@ -41,7 +41,6 @@ export class LoginFormComponent implements OnInit {
     //this.initGoogleSignIn()
     this.autoSvc.getCountries().then(c => {
       this.countries = c
-      countryDB.countries.bulkAdd(c)
       console.log('countries: ', this.countries)
     })
 
