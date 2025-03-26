@@ -1,4 +1,4 @@
-<p-card styleClass="login-form" class="flex justify-content-center">
+<!-- <p-card styleClass="login-form" class="flex justify-content-center">
     <h2>Sign up</h2>
     <form [formGroup]="signUpForm" (submit)="processSignUpForm()">
         <p-floatlabel>
@@ -67,4 +67,102 @@
             }
         <p-button type="submit" [disabled]="isValid()">Sign up</p-button>
     </form>
-</p-card>
+</p-card> -->
+
+<div class="signup-container">
+    <p-card styleClass="signup-form" class="flex justify-content-center">
+      <ng-template pTemplate="header">
+        <div class="flex justify-content-center p-3">
+          <h2>Sign up</h2>
+        </div>
+      </ng-template>
+      
+      <form [formGroup]="signUpForm" (submit)="processSignUpForm()">
+        <div class="field mb-4">
+          <p-floatlabel>
+            <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+            <label for="username">Username</label>
+          </p-floatlabel>
+        </div>
+        
+        <div class="field">
+            <span class="p-float-label">
+                <p-floatLabel>
+                    <label for="username">Location</label>
+                <p-autoComplete 
+                id="location" 
+                placeholder="Country, City"
+                formControlName="location" 
+                [suggestions]="filteredLocation" 
+                (completeMethod)="filterLocation($event)"
+                [dropdown]="true"
+                [style]="{'width':'100%'}">
+                </p-autoComplete>
+                </p-floatLabel>
+            </span>
+            @if (signUpForm.get('location')?.invalid && (signUpForm.get('location')?.dirty || signUpForm.get('location')?.touched)) {
+                @if (signUpForm.get('location')?.errors?.['required']) {
+                <p-message severity="error" variant="simple" size="small">Country, City is required</p-message>
+                }
+        }
+        </div>
+        
+        <div class="field mb-4">
+          <p-floatlabel>
+            <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+            <label for="email">Email</label>
+          </p-floatlabel>
+          @if (signUpForm.get('email')?.invalid && (signUpForm.get('email')?.dirty || signUpForm.get('email')?.touched)) {
+            @if (signUpForm.get('email')?.errors?.['required']) {
+              <p-message severity="error" variant="simple" size="small">Email is required</p-message>
+            } @else if (signUpForm.get('email')?.errors?.['email']) {
+              <p-message severity="error" variant="simple" size="small">Please enter a valid email</p-message>
+            } @else if (signUpForm.get('email')?.errors?.['emailExists']) {
+              <p-message severity="error" variant="simple" size="small">Email has already been registered</p-message>
+            } @else if (signUpForm.get('email')?.errors?.['emailNotFound']) {
+              <p-message severity="error" variant="simple" size="small">Email not found</p-message>
+            }
+          }
+        </div>
+        
+        <div class="field mb-4">
+          <p-floatlabel>
+            <input id="password" type="password" pInputText formControlName="password" class="w-full" />
+            <label for="password">Password</label>
+          </p-floatlabel>
+          @if (signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty || signUpForm.get('password')?.touched)) {
+            @if (signUpForm.get('password')?.errors?.['required']) {
+              <p-message severity="error" variant="simple" size="small">Password is required</p-message>
+            } @else if (signUpForm.get('password')?.errors?.['minlength']) {
+              <p-message severity="error" variant="simple" size="small">Password must be at least 8 characters long</p-message>
+            } @else if (signUpForm.get('password')?.errors?.['maxlength']) {
+              <p-message severity="error" variant="simple" size="small">Password cannot be more than 20 characters</p-message>
+            }
+          }
+        </div>
+        
+        <div class="field mb-4">
+          <p-floatlabel>
+            <input id="confirmPassword" type="password" pInputText formControlName="confirmPassword" class="w-full" />
+            <label for="confirmPassword">Confirm Password</label>
+          </p-floatlabel>
+          @if (signUpForm.get('confirmPassword')?.invalid && (signUpForm.get('confirmPassword')?.dirty || signUpForm.get('confirmPassword')?.touched)) {
+            @if (signUpForm.get('confirmPassword')?.errors?.['required']) {
+              <p-message severity="error" variant="simple" size="small">Password is required</p-message>
+            } @else if (signUpForm.get('confirmPassword')?.errors?.['minlength']) {
+              <p-message severity="error" variant="simple" size="small">Password must be at least 8 characters long</p-message>
+            } @else if (signUpForm.get('confirmPassword')?.errors?.['maxlength']) {
+              <p-message severity="error" variant="simple" size="small">Password cannot be more than 20 characters</p-message>
+            }
+          }
+          @if (signUpForm.errors?.['passwordMismatch'] && (signUpForm.get('confirmPassword')?.dirty || signUpForm.get('confirmPassword')?.touched)) {
+            <p-message severity="error" variant="simple" size="small">Passwords do not match</p-message>
+          }
+        </div>
+        
+        <div class="flex justify-content-center mt-4">
+          <p-button type="submit" [disabled]="isValid()" label="Sign up" styleClass="w-10 signup-button"></p-button>
+        </div>
+      </form>
+    </p-card>
+  </div>

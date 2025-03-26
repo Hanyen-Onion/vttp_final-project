@@ -1,49 +1,58 @@
+<div class="login-container">
 <p-card styleClass="user-form" class="flex justify-content-center">
-  <h2>Login</h2>
+  <ng-template pTemplate="header">
+      <div class="flex justify-content-center p-3">
+        <h2>Login</h2>
+      </div>
+  </ng-template>
+
   <form [formGroup]="loginForm" (submit)="processLoginForm()">
-    <p-floatlabel>
-      <input id="email" type="email" pInputText formControlName="email" />
-      <label for="email">Email</label>
-    </p-floatlabel>
-    @if (loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
-      @if (loginForm.get('email')?.errors?.['required']) {
-        <p-message severity="error" variant="simple" size="small">Email is required</p-message>
-      } @else if (loginForm.get('email')?.errors?.['email']) {
-        <p-message severity="error" variant="simple" size="small">Please enter a valid email</p-message>
-      } @else if (loginForm.get('email')?.errors?.['emailNotFound']) {
-        <p-message severity="error" variant="simple" size="small">Email is not registered</p-message>
+    <div class="field mb-4">
+      <p-floatlabel>
+        <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+        <label for="email">Email</label>
+      </p-floatlabel>
+      @if (loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
+        @if (loginForm.get('email')?.errors?.['required']) {
+          <p-message severity="error" variant="simple" size="small">Email is required</p-message>
+        } @else if (loginForm.get('email')?.errors?.['email']) {
+          <p-message severity="error" variant="simple" size="small">Please enter a valid email</p-message>
+        } @else if (loginForm.get('email')?.errors?.['emailNotFound']) {
+          <p-message severity="error" variant="simple" size="small">Email is not registered</p-message>
+        }
       }
-    }
-    <br>
-    <p-floatlabel>
-      <input id="password" type="password" pInputText formControlName="password" />
-      <label for="password">Password</label>
-    </p-floatlabel>
-    @if (loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
-      @if (loginForm.get('password')?.errors?.['required']) {
-        <p-message severity="error" variant="simple" size="small">Password is required</p-message>
-      } @else if (loginForm.get('password')?.errors?.['minlength']) {
-        <p-message severity="error" variant="simple" size="small">Password must be at least 6 characters long</p-message>
-      } @else if (loginForm.get('password')?.errors?.['maxlength']) {
-        <p-message severity="error" variant="simple" size="small">Password cannot be more than 20 characters</p-message>
+    </div>
+
+    <div class="field mb-4">
+      <p-floatlabel>
+        <input id="password" type="password" pInputText formControlName="password" class="w-full"/>
+        <label for="password">Password</label>
+      </p-floatlabel>
+      @if (loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
+        @if (loginForm.get('password')?.errors?.['required']) {
+          <p-message severity="error" variant="simple" size="small">Password is required</p-message>
+        } @else if (loginForm.get('password')?.errors?.['minlength']) {
+          <p-message severity="error" variant="simple" size="small">Password must be at least 6 characters long</p-message>
+        } @else if (loginForm.get('password')?.errors?.['maxlength']) {
+          <p-message severity="error" variant="simple" size="small">Password cannot be more than 20 characters</p-message>
+        }
       }
-    }
-    <p-button type="submit" [disabled]="isValid()">Login</p-button>
+    </div>
+
+    <div class="flex justify-content-center mt-4">
+      <p-button type="submit" [disabled]="isValid()" styleClass="w-10 login-button" label="Login"></p-button>
+    </div>
   </form>
 
   <p-divider align="center" type="solid"><b>or</b></p-divider>
-
-  <a (click)="toSignup()">sign up</a>
-  <!-- <div id="google_sign_in_btn">
-    <div id="g_id_onload"></div>
-    <div class="g_id_signin"></div>
-  </div> -->
+  <div class="flex justify-content-center mt-4">
+    <a (click)="toSignup()" styleClass="w-10 login-button" label="Sign up">sign up</a>
+  </div>
 </p-card>
-
-
-
-
-
-
+</div>
+<!-- <div id="google_sign_in_btn">
+  <div id="g_id_onload"></div>
+  <div class="g_id_signin"></div>
+</div>  -->
 
 

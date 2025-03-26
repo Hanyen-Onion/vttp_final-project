@@ -68,3 +68,9 @@ export interface Country {
     timezone: string
     currency: string
 }
+
+export interface CartInfo {
+    flights:FlightOffer[]
+    name:string
+    email:string
+}

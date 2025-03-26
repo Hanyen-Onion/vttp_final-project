@@ -46,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   checkout() {
+    
     this.router.navigate(['/payment'])
   }
 

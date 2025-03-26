@@ -84,6 +84,7 @@ export class SignupFormComponent implements OnInit{
       // console.log('User created successfully:', result)
         this.userStore.saveUser(result)
         this.createSignUpForm()
+        this.router.navigate(['/dashboard'])
       })
   }
 
