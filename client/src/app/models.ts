@@ -3,7 +3,8 @@ export interface LoginInfo {
     email:string 
     username:string
     password:string
-    location:string
+    country:string
+    city:string
     timezone:string
     currency:string
 }
@@ -12,7 +13,8 @@ export interface LoginInfo {
 export interface UserInfo {
     email:string 
     username:string
-    location:string
+    country:string
+    city:string
     timezone:string
     currency:string
 }
@@ -61,8 +63,8 @@ export interface ErrorObject {
 }
 
 export interface Country {
-    id?:number
-    country: string //singapore,singapore
+    country: string
+    city:string
     timezone: string
     currency: string
 }

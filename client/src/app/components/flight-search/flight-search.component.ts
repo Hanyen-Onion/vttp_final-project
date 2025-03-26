@@ -25,7 +25,9 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   private router = inject(Router)
   
   protected form!: FormGroup
-  protected sub$!: Subscription
+  protected searchSub$!: Subscription
+  protected flightsSub$!: Subscription
+  protected airportSub$!: Subscription
   protected user!:UserInfo
   protected depAirport?:any
   protected arrAirport?:any
@@ -36,7 +38,7 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     session.getSession().then(
       u => this.user = u
     )
-    this.userStore.flights$.subscribe(flights => {
+    this.flightsSub$ = this.userStore.flights$.subscribe(flights => {
       console.log('Current flights:', flights);
     });
   }
@@ -46,12 +48,28 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub$.unsubscribe()
+    if (this.searchSub$) {
+      this.searchSub$.unsubscribe()
+    }
+    if (this.flightsSub$) {
+      this.flightsSub$.unsubscribe()
+    }
+    if (this.airportSub$) {
+      this.airportSub$.unsubscribe()
+    }
   }
 
   chooseFlight(flight:FlightOffer) {
-    this.userStore.addFlight(flight)
-    this.router.navigate(['/dashboard'])
+    console.log('Choosing flight:', flight)
+    
+    // Create a deep copy of the flight to avoid reference issues
+    const flightCopy = { ...flight }
+    
+    this.userStore.saveFlight(flightCopy)
+    
+    setTimeout(() => {
+      this.router.navigate(['/dashboard'])
+    }, 200)
   }
 
   processForm() {
@@ -69,8 +87,11 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
       currency:this.user.currency
     }
 
-    console.log(query)
-    this.sub$ = this.fSvc.searchFlight(query).subscribe(
+    if (this.searchSub$) {
+      this.searchSub$.unsubscribe();
+    }
+
+    this.searchSub$ = this.fSvc.searchFlight(query).subscribe(
       (result) => {
         this.fResults = result
         console.info('result: ', this.fResults)
@@ -86,7 +107,7 @@ export class FlightSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
     await this.acSvc.initializeAutocomplete(inputs)
 
-    this.acSvc.airportSelected.subscribe(result => {
+    this.airportSub$ = this.acSvc.airportSelected.subscribe(result => {
       // Update the appropriate form control based on which input was used
       if (result.inputName === 'dep_airport') {
         this.form.get('dep_airport')?.setValue(result.airport)

@@ -10,7 +10,8 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private String location;
+    private String country;
+    private String city;
     private String timezone;
     private String currency;
     
@@ -22,10 +23,13 @@ public class User {
 
     public String getPassword() {    return password;}
     public void setPassword(String password) {    this.password = password;}
-
-    public String getLocation() {return location;}
-    public void setLocation(String location) {    this.location = location;}
     
+    public String getCountry() {    return country;}
+    public void setCountry(String country) {    this.country = country;}
+
+    public String getCity() {    return city;}
+    public void setCity(String city) {   this.city = city;}
+
     public String getTimezone() {    return timezone;}
     public void setTimezone(String timezone) {    this.timezone = timezone;}
     
@@ -37,7 +41,8 @@ public class User {
         u.setEmail(rs.getString("email"));
         u.setUsername(rs.getString("username"));
         u.setPassword(rs.getString("password"));
-        u.setLocation(rs.getString("location"));
+        u.setCountry(rs.getString("country"));
+        u.setCity(rs.getString("city"));
         u.setTimezone(rs.getString("timezone"));
         u.setCurrency(rs.getString("currency"));
         return u;
@@ -48,7 +53,8 @@ public class User {
         u.setEmail(json.getString("email"));
         u.setUsername(json.getString("username"));
         u.setPassword(json.getString("password"));
-        u.setLocation(json.getString("location"));
+        u.setCity(json.getString("city"));
+        u.setCountry(json.getString("country"));
         u.setTimezone(json.getString("timezone"));
         u.setCurrency(json.getString("currency"));
         return u;
@@ -58,19 +64,17 @@ public class User {
         JsonObject json = Json.createObjectBuilder()
             .add("email", user.getEmail())
             .add("username", user.getUsername())
-            .add("location", user.getLocation())
+            .add("city", user.getCity())
+            .add("country", user.getCountry())
             .add("timezone", user.getTimezone())
             .add("currency", user.getCurrency())
             .build();
         return json;
     }
-    
+
     @Override
     public String toString() {
-        return "User [username=" + username + ", email=" + email + ", password=" + password + ", location=" + location
-                + ", timezone=" + timezone + ", currency=" + currency + "]";
+        return "User [username=" + username + ", email=" + email + ", password=" + password + ", country=" + country
+                + ", city=" + city + ", timezone=" + timezone + ", currency=" + currency + "]";
     }
-    
-
-
 }

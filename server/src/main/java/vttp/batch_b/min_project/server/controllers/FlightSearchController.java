@@ -44,7 +44,6 @@ public class FlightSearchController {
       
             String arrIata = airSvc.getDataWithAirport(arrAir);
 
-    
             FlightQuery query = new FlightQuery(
                 depIata,
                 arrIata,

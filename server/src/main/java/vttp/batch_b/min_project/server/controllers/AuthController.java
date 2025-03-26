@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.json.JsonObject;
 import vttp.batch_b.min_project.server.models.User;
 import vttp.batch_b.min_project.server.services.AuthService;
+import vttp.batch_b.min_project.server.services.UserService;
 
 @RestController
 @RequestMapping(path="/api", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +30,28 @@ public class AuthController {
 
     @Autowired
     private AuthService authSvc;
+
+    @Autowired
+    private UserService uSvc;
+
+    @PostMapping(path="/login", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<String> login(@RequestBody MultiValueMap<String, String> form) {
+
+        String email = form.getFirst("email");
+        String pw = form.getFirst("password");
+
+        User dbUser = uSvc.getUserWithEmail(email);
+
+        if (dbUser.getPassword().equals(pw)) {
+            //convert to json with only username and email
+            JsonObject json = User.toJson(dbUser);
+
+            return ResponseEntity.ok()
+            .header("Authentication", "successful")
+            .body(json.toString());
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+    }
 
     @PostMapping(path="/google-login", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> authLogin(@RequestBody MultiValueMap<String, String> form) {

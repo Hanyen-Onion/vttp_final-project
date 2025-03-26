@@ -9,7 +9,7 @@ export class CountryRepository extends Dexie {
     constructor() {
         super('countrydb');
         this.version(1).stores({
-          countries: 'country'
+          countries: '[country+city]'
         });
     }
 }

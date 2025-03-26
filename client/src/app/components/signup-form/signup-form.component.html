@@ -8,12 +8,12 @@
         <br>
         <p-autoComplete 
             id="location" 
+            label="Location"
             formControlName="location" 
             [suggestions]="filteredLocation" 
             (completeMethod)="filterLocation($event)"
             [dropdown]="true">
         </p-autoComplete>
-        <label for="location">location</label>
             @if (signUpForm.get('location')?.invalid && (signUpForm.get('location')?.dirty || signUpForm.get('location')?.touched)) {
                 @if (signUpForm.get('location')?.errors?.['required']) {
                     <p-message severity="error" variant="simple" size="small">location is required</p-message>

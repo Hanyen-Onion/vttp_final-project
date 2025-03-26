@@ -37,21 +37,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @PostMapping(path="/login", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<String> login(@RequestBody MultiValueMap<String, String> form) {
 
-        String email = form.getFirst("email");
-        String pw = form.getFirst("password");
-
-        User dbUser = uSvc.getUserWithEmail(email);
-
-        if (dbUser.getPassword().equals(pw)) {
-            //convert to json with only username and email
-            JsonObject json = User.toJson(dbUser);
-            return ResponseEntity.ok(json.toString());
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
-    }
 
     @GetMapping(path="/validate-email")
     public ResponseEntity<String> validateEmail(@RequestParam String email) {

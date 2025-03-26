@@ -16,6 +16,7 @@ public class FlightOffer {
     private String carrier;
     private String date;
 
+    //need cities
     public static JsonObject toJson(FlightOffer flight) {
         JsonObject json = Json.createObjectBuilder()
             .add("depCode", flight.getDepCode())

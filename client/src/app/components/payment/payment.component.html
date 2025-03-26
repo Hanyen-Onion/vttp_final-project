@@ -1,1 +1,91 @@
-<p>payment works!</p>
+<div class="container">
+    <h1 style="margin-bottom: 20px; text-align: center;">Complete Your Airline Ticket Purchase</h1>
+    
+
+    <div class="checkout-grid">
+        <!-- Left column: Order summary -->
+        <div class="card order-summary">
+            <h2 class="section-title">Order Summary</h2>
+            
+            <div class="ticket-item">
+                <div class="ticket-details">
+                    <div class="ticket-name">New York to London</div>
+                    <div class="ticket-info">Mar 26, 2025 • 8:00 PM • Economy Class • Flight AB123</div>
+                </div>
+                <div class="ticket-price">$549.99</div>
+            </div>
+            
+            <div class="ticket-item">
+                <div class="ticket-details">
+                    <div class="ticket-name">London to New York</div>
+                    <div class="ticket-info">Apr 02, 2025 • 2:30 PM • Economy Class • Flight AB124</div>
+                </div>
+                <div class="ticket-price">$589.99</div>
+            </div>
+            
+            <div class="order-totals">
+                <div class="total-row">
+                    <div>Subtotal</div>
+                    <div>$1,139.98</div>
+                </div>
+                <div class="total-row">
+                    <div>Taxes & Airport Fees</div>
+                    <div>$128.50</div>
+                </div>
+                <div class="total-row">
+                    <div>Baggage Fee (2 checked bags)</div>
+                    <div>$60.00</div>
+                </div>
+                <div class="total-row final">
+                    <div>Total</div>
+                    <div>$1,328.48</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right column: Payment information -->
+        <div class="card payment-info">
+            <h2 class="section-title">Payment Information</h2>
+            
+            <form>
+                <div class="form-group">
+                    <label for="name">Name on Card</label>
+                    <input type="text" id="name" placeholder="John Smith">
+                </div>
+                
+                <div class="form-group card-number-wrapper">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                    <div class="card-icons">
+                        <img src="/api/placeholder/45/30" alt="Visa" class="card-icon">
+                        <img src="/api/placeholder/45/30" alt="Mastercard" class="card-icon">
+                        <img src="/api/placeholder/45/30" alt="Amex" class="card-icon">
+                    </div>
+                </div>
+                
+                <div class="form-group input-group">
+                    <div>
+                        <label for="expiry">Expiration Date</label>
+                        <input type="text" id="expiry" placeholder="MM / YY">
+                    </div>
+                    <div>
+                        <label for="cvv">Security Code</label>
+                        <input type="text" id="cvv" placeholder="CVV">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postal-code">Billing Postal Code</label>
+                    <input type="text" id="postal-code" placeholder="90210">
+                </div>
+                
+                <button type="submit" class="btn">Pay Now $1,328.48</button>
+                
+                <div class="security-note">
+                    <span class="security-icon">🔒</span>
+                    Secure payment processing by Stripe
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

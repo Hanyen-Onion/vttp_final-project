@@ -2,13 +2,15 @@ import { inject, Injectable } from "@angular/core";
 import { ComponentStore } from "@ngrx/component-store";
 import { FlightOffer, UserInfo, UserSlice } from "../models";
 import { SessionRepository } from "../db/session.repository";
-import { concatMap, from, Observable, switchMap, tap } from "rxjs";
+import { catchError, concatMap, EMPTY, from, map, Observable, of, tap } from "rxjs";
+import { FlightRepository } from "../db/flights.repository";
 
 const INIT: UserSlice = {
     user: {
         email: '',
         username: '',
-        location: '',
+        country: '',
+        city: '',
         timezone: '',
         currency: ''
     },
@@ -19,6 +21,7 @@ const INIT: UserSlice = {
 export class UserStore extends ComponentStore<UserSlice> {
 
     private sessRepo = inject(SessionRepository)
+    private fRepo = inject(FlightRepository)
 
     constructor() {
         super(INIT)
@@ -50,9 +53,56 @@ export class UserStore extends ComponentStore<UserSlice> {
         }
     )
 
+    readonly deleteFlight = this.updater<FlightOffer>(
+        (slice:UserSlice, flight:FlightOffer) => ({
+            ...slice,
+            flights: slice.flights.filter(f => 
+                f.depTime !== flight.depTime || 
+                f.arrTime !== flight.arrTime || 
+                f.carrier !== flight.carrier
+            )
+        })
+    )
+
     readonly flights$ = this.select(state => state.flights)
 
-    //this should only save userinfo to db
+    readonly saveFlight = this.effect(
+        (newFlight$: Observable<FlightOffer>) => 
+            newFlight$.pipe(
+                concatMap(f => {
+                    const toSave: FlightOffer = {
+                        ...f
+                    }
+                    return from(this.fRepo.saveFlight(f))
+                }),
+                tap(f => {
+                    console.log('Flight saved successfully:', f)
+                    this.addFlight(f)}),
+                catchError(() => EMPTY) 
+            )
+    )
+
+    readonly removeFlight = this.effect(
+        (flights$: Observable<FlightOffer>) => {
+            return flights$.pipe(
+                concatMap((f) => {
+                    return from(this.fRepo.deleteRepoFlight(f)).pipe(
+                        tap(() => console.log('Repository deletion successful')),
+                        map(() => f),
+                        catchError(error => {
+                            console.error('Error removing flight from repository:', error)
+                            return EMPTY
+                        })
+                    )
+                }),
+                tap(flight => {
+                    console.log('Updating store state after successful delete');
+                    this.deleteFlight(flight)
+                })
+            )
+        }
+    )
+
     readonly saveUser = this.effect(
         (newUser$: Observable<UserInfo>) => {
             return newUser$.pipe(

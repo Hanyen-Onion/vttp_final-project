@@ -1,51 +1,82 @@
-<p>dashboard works!</p>
 
-@for (f of flights; let idx = $index; track idx) {
-    <div class="card flight-card">
-        <p-panel 
-        [toggleable]="true" 
-        [collapsed]="true"
-        expandIcon="pi pi-chevron-up" 
-        collapseIcon="pi pi-chevron-down">
-            <ng-template pTemplate="header">
-                <div class="flight-header">
-                    <div class="flight-main-info">
-                        <span class="carrier">{{ f.carrier }}</span>
-                        <span class="flight-time">{{ f.depTime }} - {{ f.arrTime }}</span>
-                        <span class="duration">{{ f.duration }}</span>
+<!-- Main Content -->
+<div class="container">
+    <!-- User Greeting -->
+    <div class="user-greeting">
+        <h2>Welcome back, {{ user.username | titlecase}}</h2>
+        <p>Manage your bookings and search for new flights.</p>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-button active" data-tab="booked-flights">
+            <i class="fas fa-ticket-alt"></i> My Bookings
+        </button>
+        <button class="tab-button" data-tab="search-flights" (click)="goSearch()">
+            <i class="fas fa-search"></i> Search Flights
+        </button>
+        <button class="tab-button right-aligned" (click)="checkout()">
+            <i class="fas fa-sign-out-alt"></i> Check out
+        </button>
+    </div>
+    
+    <!-- Booked Flights Tab -->
+    <div id="booked-flights" class="tab-content active">
+        
+        @for (f of flights; let idx = $index; track idx) {
+            <div class="flight-card">
+                <div class="flight-info">
+                    <div class="flight-route">
+                        <div class="flight-city">
+                            <!-- New York -->
+                            {{f.depCode}}
+                            <!-- <span class="flight-airport">JFK</span> -->
+                        </div>
+                        <div class="flight-arrow">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <div class="flight-city">
+                            {{ f.arrCode}}
+                            <!-- <span class="flight-airport">LHR</span> -->
+                        </div>
                     </div>
-                    <div class="flight-price">{{ f.price | currency:f.currency:'symbol-narrow' }}</div>
+                    <div class="flight-details">
+                        <div class="flight-detail-item">
+                            <i class="far fa-calendar-alt"></i>
+                            {{ f.date | date:'dd MMM yyyy'}} 
+                        </div>
+                        <div class="flight-detail-item">
+                            <i class="far fa-clock"></i>
+                            {{f.depTime | date:'shortTime'}}
+                        </div>
+                        <div class="flight-detail-item">
+                            <i class="fas fa-user"></i>
+                            1 Passenger
+                        </div>
+                    </div>
                 </div>
-            </ng-template>
-    
-            <div class="flight-details">
-                <div class="flight-journey">
-                    <div class="departure">
-                        <div class="time">{{ f.depTime }}</div>
-                        <div class="airport">{{ f.depCode }}</div>
-                        <div class="terminal">Terminal: {{ f.depTerminal }}</div>
-                    </div>
-    
-                    <div class="journey-line">
-                        <div class="duration-indicator">{{ f.duration }}</div>
-                    </div>
-    
-                    <div class="arrival">
-                        <div class="time">{{ f.arrTime }}</div>
-                        <div class="airport">{{ f.arrCode }}</div>
-                        <div class="terminal">Terminal: {{ f.arrTerminal }}</div>
-                    </div>
-                </div>
-
-                <div class="action-button-container">
-                    <p-button 
-                        label="Select" 
-                        styleClass="p-button-rounded p-button-primary" 
-                        type="button"
-                        (click)="deleteFlight(idx)"
-                    ></p-button>
+                <div class="flight-actions">
+                    <span class="status-badge status-confirmed">Selected</span>
+                    <p-button icon="pi pi-times" [rounded]="true" severity="secondary" [outlined]="true" (click)="deleteFlight(f)"/>
                 </div>
             </div>
-        </p-panel>
+        }
+        
     </div>
-}
+    
+    <!-- Search Flights Tab -->
+    <div id="search-flights" class="tab-content">
+        <div class="search-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">From</label>
+                    <input type="text" class="form-control" placeholder="City or Airport">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">To</label>
+                    <input type="text" class="form-control" placeholder="City or Airport">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Departure Date

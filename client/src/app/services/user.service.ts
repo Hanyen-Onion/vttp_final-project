@@ -3,6 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { catchError, debounceTime, first, firstValueFrom, map, Observable, of, switchMap, tap, throwError } from "rxjs";
 import { LoginInfo, UserInfo } from "../models";
 import { AsyncValidatorFn, AbstractControl, ValidationErrors } from "@angular/forms";
+import { session } from "../db/session.repository";
 
 @Injectable()
 export class UserService {
@@ -10,7 +11,12 @@ export class UserService {
   private http = inject(HttpClient)
 
   createUser(user:LoginInfo): Promise<UserInfo> {
-    return firstValueFrom(this.http.post<UserInfo>('/api/create-user', user))
+    return firstValueFrom(this.http.post<UserInfo>('/api/create-user', user)).then(
+      obj => { 
+        console.info('user received after auth: ',obj)
+        return obj
+      }
+    )
   }
 
   //login auth
@@ -22,7 +28,23 @@ export class UserService {
     const headers = new HttpHeaders()
         .set('Content-Type', 'application/x-www-form-urlencoded')
     
-    return firstValueFrom(this.http.post<UserInfo>('/api/login', loginInfo.toString(), {headers:headers}))
+    return firstValueFrom(
+      this.http.post<UserInfo>('/api/login', loginInfo.toString(), 
+        {headers:headers, observe: 'response'}
+      )
+      .pipe(
+        map(resp => {
+          const authHeader = resp.headers.get('Authentication')
+          if (authHeader === 'successful') {
+            localStorage.setItem('isAuthenticated','true')
+            //session.saveUserToSession(resp.body as UserInfo)
+            return resp.body as UserInfo
+          } else {
+            throw new Error('Authentication failed')
+          }
+        })
+      )
+    )
   }
   
   emailSignedUpValidator(isLogin: boolean): AsyncValidatorFn {

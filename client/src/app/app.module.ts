@@ -21,6 +21,7 @@ import { SignupFormComponent } from './components/signup-form/signup-form.compon
 import { SessionRepository } from './db/session.repository';
 import { CountryRepository } from './db/country.repository';
 import { checkIfAuthenticated } from './guard';
+import { FlightRepository } from './db/flights.repository';
 
 const routes: Routes = [
   { path:'', component:LoginFormComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path:'signup', component:SignupFormComponent},
   { path:'dashboard', component:DashboardComponent, canActivate:[checkIfAuthenticated]},
   { path:'search',component:FlightSearchComponent, canActivate:[checkIfAuthenticated]},
+  { path: 'payment', component:PaymentComponent, canActivate:[checkIfAuthenticated]},
   
   { path:'**', redirectTo:'/', pathMatch:'full' }
 ];
@@ -54,6 +56,7 @@ const routes: Routes = [
     FlightService,
     SessionRepository,
     CountryRepository,
+    FlightRepository,
     provideHttpClient(), 
     providePrimeNG({
       theme: {

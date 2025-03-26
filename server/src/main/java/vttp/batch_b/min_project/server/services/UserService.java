@@ -48,7 +48,8 @@ public class UserService {
         locatRepo.getCountries().forEach(doc -> {
             Document currencyObj = (Document) doc.get("Currency");
             Country c = new Country(
-                doc.getString("CountryName") + "," + doc.getString("City"),
+                doc.getString("CountryName"),
+                doc.getString("City"),
                 doc.getString("Timezone"),
                 currencyObj.getString("code")
             );

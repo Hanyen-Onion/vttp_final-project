@@ -32,7 +32,8 @@ public class UserRepository {
             user.getEmail(),
             user.getUsername(),
             user.getPassword(),
-            user.getLocation(),
+            user.getCountry(),
+            user.getCity(),
             user.getTimezone(),
             user.getCurrency()
         );

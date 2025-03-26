@@ -154,7 +154,7 @@ public class FlightService {
     }
 
     public String keyName(FlightQuery query) {
-        return "flights:" + query.depAirport() + ":" + query.depAirport() + ":" + query.depDate();
+        return "flights:" + query.depAirport() + ":" + query.depAirport() + ":" + query.depDate() + ":" + query.arrDate();
     }
 
     public String getDataWithAirport(String airport) {

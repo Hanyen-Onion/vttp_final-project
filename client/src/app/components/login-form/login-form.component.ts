@@ -2,9 +2,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginInfo } from '../../models';
+import { LoginInfo, UserInfo } from '../../models';
 import { UserStore } from '../../store/user.store';
 import { Router } from '@angular/router';
+import { session } from '../../db/session.repository';
 
 declare global {
   interface Window {
@@ -31,24 +32,49 @@ export class LoginFormComponent implements OnInit {
   
 
   ngOnInit(): void {
+    this.checkExistingSession()
     this.loginForm = this.createLoginForm()
     //this.initGoogleSignIn()
   }
+
+  async checkExistingSession(): Promise<void> {
+    try {
+      // Get existing user from session
+      const users = await session.session.toArray()
+      
+      if (users.length > 0) {
+        const user: UserInfo = users[0]
+  
+        if (user) {
+          console.log('Active session found, auto-navigating to dashboard')
+          
+          localStorage.setItem('isAuthenticated', 'true')
+          this.userStore.addUser(user)
+          
+          // Navigate to dashboard
+          this.router.navigate(['/dashboard'])
+        }
+      }
+    } catch (error) { console.error('Error checking session:', error) }
+  }
+
 
   processLoginForm(){
     const user: LoginInfo = {
       email:this.loginForm.value.email,
       password: this.loginForm.value.password,
       username: '',
-      location: '',
+      country: '',
+      city: '',
       timezone: '',
       currency: ''
     }
     this.userSvc.postLogin(user).then(
       result => {
         //save to slice
-        this.userStore.addUser(result)
+        this.userStore.saveUser(result)
         console.info(result)
+        this.router.navigate(['/dashboard'])
     })
 
     this.createLoginForm()

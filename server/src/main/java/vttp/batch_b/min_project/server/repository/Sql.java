@@ -4,11 +4,11 @@ public class Sql {
     
     //user repo
     public static final String SQL_CREATE_USER = """
-        INSERT INTO users (email, username, password, location, timezone, currency) VALUES (?,?,?,?,?,?)
+        INSERT INTO users (email, username, password, country, city, timezone, currency) VALUES (?,?,?,?,?,?,?)
         """;
 
     public static final String SQL_SELECT_USER_BY_EMAIL = """
-        SELECT email, username, password, location, timezone, currency FROM users WHERE email = ?
+        SELECT email, username, password, country, city, timezone, currency FROM users WHERE email = ?
         """;
 
     //airport repo
