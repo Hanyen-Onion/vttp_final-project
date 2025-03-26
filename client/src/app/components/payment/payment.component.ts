@@ -12,32 +12,32 @@ import { PaymentService } from '../../services/payment.service';
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.css'
 })
-export class PaymentComponent implements OnInit {
-  @ViewChild('cardElement') cardElement!: ElementRef;
-  protected card: any
-  protected cardError?:string
-  protected processing = false
-  protected completed = false
-  protected amount = 1000;
-  private userStore = inject(UserStore)
-  private fb = inject(FormBuilder)
-  private pSvc = inject(PaymentService)
+export class PaymentComponent {
+  // @ViewChild('cardElement') cardElement!: ElementRef;
+  // protected card: any
+  // protected cardError?:string
+  // protected processing = false
+  // protected completed = false
+  // protected amount = 1000;
+  // private userStore = inject(UserStore)
+  // private fb = inject(FormBuilder)
+  // private pSvc = inject(PaymentService)
   
-  protected form!:FormGroup
-  protected user!:UserInfo
-  protected flights!:FlightOffer[]
+  // protected form!:FormGroup
+  // protected user!:UserInfo
+  // protected flights!:FlightOffer[]
 
-  ngOnInit(): void {
-    session.getSession().then( u => {
-      this.user = u
-      console.info('user: ', this.user)
-    })
-    flight.getFlights().then( f => {
-      this.flights = f
-      console.info('flights: ', this.flights)
-    })
+  // ngOnInit(): void {
+  //   // session.getSession().then( u => {
+  //   //   this.user = u
+  //   //   console.info('user: ', this.user)
+  //   // })
+  //   // flight.getFlights().then( f => {
+  //   //   this.flights = f
+  //   //   console.info('flights: ', this.flights)
+  //   // })
   
-  }
+  // }
 
   // async initializeStripe() {
   //   const { stripe, clientSecret } = await this.pSvc.createPayment(this.amount);
@@ -74,14 +74,6 @@ export class PaymentComponent implements OnInit {
   //   }
   // }
 
-  // createForm() {
-  //   this.form = this.fb.group({
-  //     name: this.fb.control<string>('', [Validators.required]),
-  //     email: this.fb.control<string>(this.user.email, [Validators.required]),
-  //     cardNumber: this.fb.control<string>('1234 5678 9012 3456',[Validators.required]),
-  //     cvv: this.fb.control<string>('CVV',[Validators.required]),
-  //     expirationDate: this.fb.control<string>('MM / YY', [Validators.required])
-  //   })
-  // }
+
   
 }
