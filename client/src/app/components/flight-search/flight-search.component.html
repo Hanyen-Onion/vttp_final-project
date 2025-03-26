@@ -1,4 +1,88 @@
-<p-card header="Flight search">
+<p-card class="search-card">
+    <ng-template pTemplate="header">
+        <div class="search-header">
+            <h3 class="m-0">Flight Search</h3>
+        </div>
+    </ng-template>
+    
+    <form [formGroup]="form" (submit)="processForm()" class="search-form">
+        <div class="search-row">
+            <div class="search-field">
+                <label for="dep_airport">From</label>
+                <input 
+                    #dep_airport
+                    type="text" 
+                    formControlName="dep_airport" 
+                    id="dep_airport" 
+                    placeholder="Departure airport">
+            </div>
+            
+            <div class="search-field">
+                <label for="arr_airport">To</label>
+                <input 
+                    #arr_airport
+                    type="text" 
+                    formControlName="arr_airport" 
+                    id="arr_airport" 
+                    placeholder="Arrival airport">
+            </div>
+        </div>
+
+        <div class="search-row">
+            <div class="search-field date-field">
+                <label for="dep_date">Depart</label>
+                <input 
+                    type="date" 
+                    formControlName="dep_date" 
+                    id="dep_date">
+            </div>
+            
+            <div class="search-field date-field">
+                <label for="arr_date">Return</label>
+                <input 
+                    type="date" 
+                    formControlName="arr_date" 
+                    id="arr_date"
+                    [disabled]="form.get('trip_type')?.value === 'one-way'">
+            </div>
+        </div>
+
+        <div class="search-options">
+            <div class="trip-type">
+                <label class="radio-container">
+                    <input type="radio" value="one-way" formControlName="trip_type" id="one-way">
+                    <span class="radio-text">One way</span>
+                </label>
+                <label class="radio-container">
+                    <input type="radio" value="round-trip" formControlName="trip_type" id="round-trip"> 
+                    <span class="radio-text">Round trip</span>
+                </label>
+            </div>
+            
+            <div class="search-field select-field">
+                <select formControlName="class" id="class">
+                    <option value="ECONOMY" selected>Economy</option>
+                    <option value="BUSINESS">Business</option>
+                    <option value="FIRST">First</option>
+                    <option value="PREMIUM_ECONOMY">Premium</option>
+                </select>
+            </div>
+            
+            <div class="passenger-field">
+                <label for="passenger" class="passenger-label">Passengers</label>
+                <input 
+                    type="number" 
+                    formControlName="passenger" 
+                    id="passenger" 
+                    min="1" 
+                    max="9">
+            </div>
+            
+            <button type="submit" class="search-btn">Search</button>
+        </div>
+    </form>
+</p-card>
+<!-- <p-card header="Flight search">
     <form [formGroup]="form" (submit)="processForm()">
         <label>Depart:</label>
         <input 
@@ -31,7 +115,7 @@
         passenger <input type="number" name="passenger" formControlName="passenger" id="passenger">
         <button type="submit">search</button>
     </form>
-</p-card>
+</p-card> -->
 
 <hr>
 

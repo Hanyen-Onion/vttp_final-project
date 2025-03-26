@@ -109,3 +109,137 @@
     margin-top: 1.5rem;
     padding-top: 1rem;
 }
+
+:host ::ng-deep .search-card .p-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+:host ::ng-deep .search-card .p-card .p-card-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-bottom: none;
+}
+
+:host ::ng-deep .search-card .p-card .p-card-body {
+    padding: 0;
+}
+
+:host ::ng-deep .search-card .p-card .p-card-content {
+    padding: 1rem;
+    background-color: white;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.search-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.search-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.search-field input, 
+.search-field select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.search-field input:focus, 
+.search-field select:focus {
+    border-color: #3f51b5;
+    outline: none;
+}
+
+.search-options {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.trip-type {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.radio-container {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.select-field {
+    max-width: 120px;
+}
+
+.passenger-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.passenger-field input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.passenger-label {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+label {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.search-btn {
+    margin-left: auto;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-btn:hover {
+    background-color: #2c3e93;
+}
+
+/* Make it responsive */
+@media (max-width: 768px) {
+    .search-row, .search-options {
+        flex-direction: column;
+    }
+    
+    .search-btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}

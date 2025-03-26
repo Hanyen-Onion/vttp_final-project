@@ -9,6 +9,10 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { PaginatorModule } from 'primeng/paginator';
 import { AccordionModule } from 'primeng/accordion';
 import { PanelModule } from 'primeng/panel';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
     exports: [
@@ -21,7 +25,12 @@ import { PanelModule } from 'primeng/panel';
         AutoCompleteModule,
         PaginatorModule,
         AccordionModule,
-        PanelModule
+        PanelModule,
+        CalendarModule,
+        DropdownModule,
+        RadioButtonModule,
+        InputNumberModule
+
     ]
 })
 

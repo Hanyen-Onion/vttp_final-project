@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserInfo } from './models';
 import { session } from './db/session.repository';
@@ -16,11 +16,16 @@ export class AppComponent implements OnInit {
 
   //private httpSvc = inject()
   private activatedRoute = inject(ActivatedRoute)
+  private router = inject(Router)
 
   protected user!:UserInfo
 
   ngOnInit(): void {
     this.getLoggedInUser
+  }
+
+  toDashbaord() {
+    this.router.navigate(['/dashboard'])
   }
 
   async getLoggedInUser() {
