@@ -7,6 +7,7 @@ import { UserStore } from '../../store/user.store';
 import { Router } from '@angular/router';
 import { session } from '../../db/session.repository';
 import { AutoCompleteService } from '../../services/autocomplete.service';
+import { countryDB } from '../../db/country.repository';
 
 declare global {
   interface Window {
@@ -40,6 +41,8 @@ export class LoginFormComponent implements OnInit {
     //this.initGoogleSignIn()
     this.autoSvc.getCountries().then(c => {
       this.countries = c
+      countryDB.countries.bulkAdd(c)
+      console.log('countries: ', this.countries)
     })
 
   }
