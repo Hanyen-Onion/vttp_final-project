@@ -85,25 +85,54 @@
     </div>
 }
 
-<!-- <div class="card">
-    <p-panel 
-    [toggleable]="true" 
-    [collapsed]="true"
-    expandIcon="pi pi-chevron-up" 
-    collapseIcon="pi pi-chevron-down">
-        <ng-template #header>
-            <div class="">
-                {{ f.carrier}} {{ f.depTime}} - {{ f.arrTime}} {{ f.duration}} {{ f.price | currency:f.currency:'symbol-narrow'}}
-            </div>
-        </ng-template>
+<div class="card flight-card">
+        <p-panel 
+        [toggleable]="true" 
+        [collapsed]="true"
+        expandIcon="pi pi-chevron-up" 
+        collapseIcon="pi pi-chevron-down">
+            <ng-template pTemplate="header">
+                <div class="flight-header">
+                    <div class="flight-main-info">
+                        <span class="carrier">CHINA AIR</span>
+                        <span class="flight-time">10:00 pm - 4:00 am</span>
+                        <span class="duration">4 H 15 MIN</span>
+                    </div>
+                    <div class="flight-price">$ 250.20</div>
+                </div>
+            </ng-template>
+    
+            <div class="flight-details">
+                <div class="flight-journey">
+                    <div class="departure">
+                        <div class="time">10:00 pm</div>
+                        <div class="airport">CHA</div>
+                        <div class="terminal">Terminal: 1</div>
+                    </div>
+    
+                    <div class="journey-line">
+                        <div class="duration-indicator">4 H 15 MIN</div>
+                    </div>
+    
+                    <div class="arrival">
+                        <div class="time">4:00 am</div>
+                        <div class="airport">SIA</div>
+                        <div class="terminal">Terminal: 1</div>
+                    </div>
+                </div>
 
-        <p class="m-0">
-            {{ f.depTime}} {{ f.depCode}} Terminal: {{ f.depTerminal}}
-            {{ f.duration}} 
-            {{ f.arrTime}} {{ f.arrCode}} Terminal: {{ f.arrTerminal}}
-        </p>
-    </p-panel>
-</div> -->
+                <div class="action-button-container">
+                    <p-button 
+                        label="Select" 
+                        styleClass="p-button-rounded p-button-primary" 
+                        type="button"
+                        (click)="chooseFlight(f)"
+                    ></p-button>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div> 
 
 
 
