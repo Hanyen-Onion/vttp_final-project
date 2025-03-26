@@ -2,7 +2,7 @@ create database flight_planner;
 
 use flight_planner;
 
-drop table users;
+-- drop table users;
 
 create table users (
     email varchar(150) not null,

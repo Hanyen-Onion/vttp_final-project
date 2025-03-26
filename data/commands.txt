@@ -1,4 +1,4 @@
-mongoimport -d flight_planner -c timezones  --type json --file timezones.json --jsonArray
+mongoimport  -c timezones  --type json --file timezones.json --jsonArray
 
 //to format the data
 db.timezones.aggregate([
@@ -64,7 +64,7 @@ db.airports.updateMany(
   ]
 )
 
-mongoimport -d flight_planner -c countries  --type json --file countries.json --jsonArray
+mongoimport --uri="mongodb://mongo:JSCDkXfvVYxuPjDdupJacxQJkRXUekXY@trolley.proxy.rlwy.net:52340/flight-planner?authSource=admin" -c countries  --type json --file countries.json --jsonArray
 
 
 // db.timezones.aggregate([

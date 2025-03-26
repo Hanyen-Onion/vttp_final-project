@@ -7,6 +7,7 @@ import { AutoCompleteService } from '../../services/autocomplete.service';
 import { countryDB } from '../../db/country.repository';
 import { session } from '../../db/session.repository';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-signup-form',
@@ -89,23 +90,21 @@ export class SignupFormComponent implements OnInit{
   }
 
   async loadCountries() {
-    //from db
-    const countries = this.autoSvc.getCountriesFromDB().subscribe(
-      (countries) => {
-        //console.log('Initial countries from DB:', countries)
-        if (countries.length === 0) {
-          this.autoSvc.getCountries()
-          const newCountries = this.autoSvc.getCountriesFromDB().subscribe(
-            newC => {
-              for (const country of newC) 
-                this.locationMap.set(this.formatLocationKey(country), country)
-              //console.log('New country sample:', newC.length > 0 ? newC[0] : 'No data')
-          })
-        }
-        for (const country of countries) 
-          this.locationMap.set(this.formatLocationKey(country), country)
-        console.log('country sample:', countries.length > 0 ? countries[0] : 'No data')
-    })
+    // First check if we have countries in DB
+    const countries = await firstValueFrom(this.autoSvc.getCountriesFromDB())
+    
+    if (countries.length === 0) {
+      await this.autoSvc.getCountries()
+  
+      const newCountries = await firstValueFrom(this.autoSvc.getCountriesFromDB())
+      
+      for (const country of newCountries) {
+        this.locationMap.set(this.formatLocationKey(country), country)
+      }
+      
+      console.log('New country sample:', newCountries.length > 0 ? newCountries[0] : 'No data')
+      return;
+    }
   }
 
   filterLocation(event: any): void {

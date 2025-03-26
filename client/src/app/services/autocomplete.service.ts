@@ -10,11 +10,11 @@ export class AutoCompleteService {
   private http = inject(HttpClient)
 
   async getCountries(): Promise<Country[]> {
-    const countries:Country[] = await firstValueFrom(this.http.get<Country[]>('/api/countries'))
+    const countries: Country[] = await firstValueFrom(this.http.get<Country[]>('/api/countries'))
 
     await countryDB.countries.clear() // Clear existing data
     await countryDB.countries.bulkAdd(countries)
-    return [];
+    return countries
   }
 
   //from db
