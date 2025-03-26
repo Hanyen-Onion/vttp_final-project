@@ -2,10 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginInfo, UserInfo } from '../../models';
+import { Country, LoginInfo, UserInfo } from '../../models';
 import { UserStore } from '../../store/user.store';
 import { Router } from '@angular/router';
 import { session } from '../../db/session.repository';
+import { AutoCompleteService } from '../../services/autocomplete.service';
 
 declare global {
   interface Window {
@@ -25,16 +26,22 @@ export class LoginFormComponent implements OnInit {
   private fb = inject(FormBuilder)
   private userStore = inject(UserStore)
   private router = inject(Router)
+  private autoSvc = inject(AutoCompleteService)
 
   protected loginForm!:FormGroup
   protected isLogin:boolean = true
   protected sub$!:Subscription
+  protected countries?:Country[]
   
 
   ngOnInit(): void {
     this.checkExistingSession()
     this.loginForm = this.createLoginForm()
     //this.initGoogleSignIn()
+    this.autoSvc.getCountries().then(c => {
+      this.countries = c
+    })
+
   }
 
   async checkExistingSession(): Promise<void> {
